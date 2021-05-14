@@ -1,5 +1,6 @@
 function par = plot_raster(obj,varargin)
-% obj.plot_raster(['Name',Values], ...)
+% par = obj.plot_raster(par)
+% par = obj.plot_raster('Name',Values, ...)
 % 
 % 
 % 
@@ -14,20 +15,42 @@ function par = plot_raster(obj,varargin)
 % ax            ... handle for axes to plot in. Default = gca
 
 
-par.colormap   = @lines;
-par.window     = [0 1];
-par.showlegend = true;
-par.ax         = [];
+
+
+par.colormap    = [];
+par.window      = [0 1];
+par.showlegend  = true;
+par.ax          = [];
+par.tiledlayout = [];
 
 par = epa.helper.parse_parameters(par,varargin);
-
 mustBeNonempty(par.event);
+
+if numel(obj) > 1
+    t = tiledlayout('flow');
+    par.tiledlayout = t;
+    par = arrayfun(@(a) a.plot_raster(par),obj);
+    t.Title.String = obj(1).Session.Name;
+    return
+end
+
+if ~isempty(par.tiledlayout)
+    par.ax = nexttile(par.tiledlayout);
+end
+
+
+
+
+
+
 
 if ~isa(par.event,'epa.Event')
     par.event = obj.Session.find_event(par.event);
 end
 
 E = par.event; % copy handle to Event object
+
+
 
 if isempty(par.ax), par.ax = gca; end
 
@@ -37,7 +60,7 @@ cla(par.ax,'reset');
 [t,eidx,v] = obj.eventlocked(par);
 uv = unique(v);
 
-cm = colormap(par.colormap(length(uv)));
+cm = epa.helper.colormap(par.colormap,numel(uv));
 
 for i = 1:length(uv)
     ind = uv(i) == v;

@@ -52,15 +52,17 @@ classdef Event < handle
         
         
         
-        function [v,oot] = subset(obj,val)
-            % [v,oo] = subset(obj,val)
+        function [v,oot] = subset(obj,val,tol)
+            % [v,oo] = subset(obj,val,[tol])
             %
             % returns a subset of Event values and on/off times
+            
+            if nargin < 3 || isempty(tol), tol = 1e-6; end
             
             v = obj.Values;
             oot = obj.OnOffTimes;
             if nargin == 2 && ~isempty(val) && ~isequal(val,'all')
-                ind = ismember(v,val);
+                ind = ismembertol(v,val,tol);
                 v(~ind) = [];
                 oot(~ind,:) = [];
             end

@@ -7,7 +7,7 @@ classdef Cluster < handle & dynamicprops
     properties
         ID       (1,1) uint16 {mustBeFinite}
         Alias    string
-        Type     string {mustBeMember(Type,["SU","MSU","MU","Noise","Unspecified"])} = "Unspecified"
+        Type     string {mustBeMember(Type,["SU","MSU","MU","Noise",""])} = ""
 
         SpikeTimes (:,1) double {mustBeFinite}
         Waveforms  single
@@ -28,7 +28,7 @@ classdef Cluster < handle & dynamicprops
         N              % spike count
     end
     
-    properties (Access = private)
+    properties (SetAccess = immutable)
         Session      (1,1) %epa.Session
     end
     

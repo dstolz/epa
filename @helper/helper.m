@@ -25,10 +25,27 @@ classdef helper < handle
                 end
             end
             
-            
-            [r,params] = parseparams(varargin);
+            [~,params] = parseparams(varargin);
             for i = 1:2:length(params)
                 par.(lower(params{i})) = params{i+1};
+            end
+        end
+        
+        
+        
+        function cm = colormap(cm,n)
+            if isempty(cm)
+                if n == 1
+                    cm = [0 0 0];
+                else
+                    cm = @lines;
+                end
+            end
+            
+            if isa(cm,'function_handle')
+                cm = cm(n);
+            else
+                cm = cm(1:n,:);
             end
         end
     end

@@ -1,5 +1,6 @@
 function [t,eidx,vid] = eventlocked(obj,varargin)
-% [t,eidx,vid] = eventlocked(ClusterObj,['Name',Values])
+% [t,eidx,vid] = eventlocked(ClusterObj,par)
+% [t,eidx,vid] = eventlocked(ClusterObj,'Name',Value,...)
 %  
 % Input:
 %   eventname     ... char event name

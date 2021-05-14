@@ -1,5 +1,5 @@
-function h = plot_psth(obj,varargin)
-% h = plot_psth(ClusterObj,['Name',Values])
+function par = plot_psth(obj,varargin)
+% par = plot_psth(ClusterObj,['Name',Values])
 % 
 % event         ... either an epa.Event object or a string of the event name
 % eventvalue    ... specify event value(s) or 'all', default = 'all'
@@ -10,27 +10,32 @@ function h = plot_psth(obj,varargin)
 %                   values: 'count','firingrate','max'
 %                   default = 'count'
 % showlegend    ... true/false, default = true
-
-
-
 % defaults
+
+
+
+
 par.binsize       = 0.01;
 par.window        = [0 0.5];
-par.colormap      = @lines;
+par.colormap      = [];
 par.normalization = 'count';
 par.showlegend    = false;
 par.ax = [];
 
 par = epa.helper.parse_parameters(par,varargin);
 
-mustBeNonempty(par.event);
-
-if ~isa(par.event,'epa.Event')
-    par.event = obj.Session.find_event(par.event);
+if numel(obj) > 1
+    t = tiledlayout('flow');
+    par.tiledlayout = t;
+    par = arrayfun(@(a) a.plot_psth(par),obj);
+    t.Title.String = obj(1).Session.Name;
+    return
 end
 
-E = par.event; % copy handle to Event object
 
+if ~isempty(par.tiledlayout)
+    par.ax = nexttile(par.tiledlayout);
+end
 
 if isempty(par.ax), par.ax = gca; end
 
@@ -57,7 +62,6 @@ par.window = par.window(:)';
 
 
 
-cm = colormap(par.colormap(length(uv)));
 
 
 switch lower(par.normalization)
@@ -68,7 +72,11 @@ switch lower(par.normalization)
         c = c ./ max(c);
 end % otherwise just use counts
 
-cla(par.ax);
+
+cm = epa.helper.colormap(par.colormap,size(c,1));
+
+
+cla(par.ax,'reset');
 hold(par.ax,'on')
 for i = 1:size(c,1)
     par.plot.path(i) = histogram(par.ax,'BinEdges',b,'BinCounts',c(i,:),'FaceColor',cm(i,:), ...

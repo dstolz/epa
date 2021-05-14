@@ -8,7 +8,9 @@ classdef ReceptiveField < handle
         metric      (1,:) char {mustBeMember(metric,{'sum','mean','median','mode'})} = 'mean';
         window      (1,2) double {mustBeFinite} = [0 1];
         plotstyle   (1,:) char {mustBeMember(plotstyle,{'surf','imagesc','contourf','contour'})} = 'contour';
-        colormap = parula;
+        colormap = @parula;
+        
+        smoothmethod (1,:) char
     end
     
     
@@ -22,6 +24,9 @@ classdef ReceptiveField < handle
         
         xValues
         yValues
+        
+        xEvent
+        yEvent
     end
     
     properties (SetAccess = immutable)
@@ -41,13 +46,20 @@ classdef ReceptiveField < handle
         
         
         function x = get.xValues(obj)
-            x = obj.Events(1).DistinctValues;
+            x = obj.xEvent.DistinctValues;
         end
         
         function y = get.yValues(obj)
-            y = obj.Events(2).DistinctValues;
+            y = obj.yEvent.DistinctValues;
         end
         
+        function xe = get.xEvent(obj)
+            xe = obj.Events(1);
+        end
+        
+        function ye = get.yEvent(obj)
+            ye = obj.Events(2);
+        end
         
         function s = get.windowSamples(obj)
             s = round(obj.Cluster.SamplingRate.*obj.window);
@@ -65,8 +77,8 @@ classdef ReceptiveField < handle
                 sc(i) = sum(ind);
             end
                         
-            ev_y = obj.Events(1).Values; uev_y = unique(ev_y);
-            ev_x = obj.Events(2).Values; uev_x = unique(ev_x);
+            ev_y = obj.yEvent.Values; uev_y = obj.yValues;
+            ev_x = obj.xEvent.Values; uev_x = obj.xValues;
             d = zeros(length(uev_y),length(uev_x));
             for i = 1:length(uev_y)
                 for j = 1:length(uev_x)
@@ -74,19 +86,35 @@ classdef ReceptiveField < handle
                     d(i,j) = feval(obj.metric,sc(ind));
                 end
             end
+            
+            [m,n] = size(d);
+            switch obj.smoothmethod
+                case 'interpft'
+                    d = interpft(d,3*m,1);
+                    d = interpft(d,3*n,2);
+            end
         end
         
+        
+        
         function h = plot(obj,ax)
-            if nargin == 2, obj.ax = ax; end
+            if nargin < 2, ax = gca; end
+            obj.ax = ax;
+            
             h = obj.(['plot_' obj.plotstyle]);
             
+            obj.label_axes;
+            
+            axis(ax,'tight');
+            
             if nargout == 0, clear h; end
+            
         end
         
         function h = plot_contour(obj,ax)
             if nargin < 2, ax = gca; end            
             
-            [my,mx] = meshgrid(obj.yValues,obj.xValues);
+            [mx,my] = meshgrid(obj.xValues,obj.yValues);
             h = contour(ax,my,mx,obj.data);
             ax.Colormap = obj.colormap;
         end
@@ -95,22 +123,35 @@ classdef ReceptiveField < handle
         function h = plot_contourf(obj,ax)
             if nargin < 2, ax = gca; end            
             
-            [my,mx] = meshgrid(obj.yValues,obj.xValues);
+            [mx,my] = meshgrid(obj.xValues,obj.yValues);
             h = contourf(ax,my,mx,obj.data);
             ax.Colormap = obj.colormap;
         end
         
         function h = plot_surf(obj,ax)
             if nargin < 2, ax = gca; end            
-            h = surf(ax,obj.yValues,obj.xValues,obj.data);
+            h = surf(ax,obj.xValues,obj.yValues,obj.data);
         end
         
         function h = plot_imagesc(obj,ax)
             if nargin < 2, ax = gca; end            
-            h = imagesc(ax,obj.yValues,obj.xValues,obj.data);
+            h = imagesc(ax,obj.xValues,obj.yValues,obj.data);
             ax.YDir = 'normal';
         end
         
     end
-    
+   
+    methods (Access = protected)
+        function label_axes(obj)
+            ax = obj.ax;
+            
+            ax.XAxis.Label.Interpreter = 'none';
+            ax.YAxis.Label.Interpreter = 'none';
+            ax.XAxis.Label.String = obj.xEvent.Name;
+            ax.YAxis.Label.String = obj.yEvent.Name;
+            
+            ax.Title.Interpreter = 'none';
+            ax.Title.String = obj.Cluster.TitleStr;
+        end
+    end
 end
