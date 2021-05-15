@@ -16,6 +16,7 @@ function par = plot_raster(obj,varargin)
 
 
 
+% defaults
 
 par.colormap    = [];
 par.window      = [0 1];
@@ -48,16 +49,24 @@ if ~isa(par.event,'epa.Event')
     par.event = obj.Session.find_event(par.event);
 end
 
+
+
+
+[t,eidx,v] = obj.eventlocked(par);
+
+
+
+
+
+
+
 E = par.event; % copy handle to Event object
-
-
 
 if isempty(par.ax), par.ax = gca; end
 
 cla(par.ax,'reset');
 
 
-[t,eidx,v] = obj.eventlocked(par);
 uv = unique(v);
 
 cm = epa.helper.colormap(par.colormap,numel(uv));
