@@ -31,7 +31,7 @@ par = epa.helper.parse_parameters(par,varargin);
 mustBeNonempty(par.event);
 
 if ~isa(par.event,'epa.Event')
-    par.event = obj.Session.find_event(par.event);
+    par.event = obj.Session.find_Event(par.event);
 end
 
 E = par.event; % copy handle to Event object

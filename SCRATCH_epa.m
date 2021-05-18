@@ -35,7 +35,7 @@ for i = 1:length(BPfileroot)
         ind = ST{j} > BPtimes(i) & ST{j} <= BPtimes(i+1);
         xx = ST{j}(ind) - BPtimes(i); % recording block starts at 0 seconds
         S(i).add_Cluster(j,xx);
-        S(i).Clusters(end).Alias = clusterAlias{j};
+        S(i).Clusters(end).Name = clusterAlias{j};
     end
 end
 
@@ -159,13 +159,13 @@ par.eventvalue = 0.5;
 par.window = [-0.2 1];
 par.showlegend = false;
 
+
 % Plot all clusters at once by not specifying a specific index
-S(3).Clusters([1 3]).plot_raster(par); 
+S(2).Clusters.plot_raster(par); 
 
     
     
 %% Example 1c
-
 
 figure
 par = [];
@@ -175,20 +175,45 @@ par.window = [-0.2 1];
 par.binsize = 0.01;
 par.normalization = 'firingrate';
 
-S(3).Clusters.plot_psth(par);
+% we can use S.find_Session to return a Session based on a substring
+Spost = S.find_Session("Post"); % find the "Passive-Post-210227-125506" session
+
+Spost.Clusters.plot_psth(par);
+
+
+
+
+
+%% Plot a summary of all Clusters in Session 3
+
+% we can use S.find_Session to return a Session based on a substring
+Spost = S.find_Session("Post"); % find the "Passive-Post-210227-125506" session
+
+par = [];
+par.event = "AMdepth";
+par.eventvalue = 0.5;
+par.window = [-.5 1];
+par.normalization = 'probability';
+par.parent = gcf;
+par.parent.Color = 'w';
+par = Spost.Clusters.plot_summary(par);
+
+figure(gcf);
+
+
 
 
 %%
 
-thisSession = S(4);
+Stuning = S.find_Session("Tuning");
 
-xEvent = thisSession.find_event("Freq");
-yEvent = thisSession.find_event("Levl");
+xEvent = Stuning.find_Event("Freq");
+yEvent = Stuning.find_Event("Levl");
 
-tiledlayout(1,length(thisSession.Clusters));
-for cidx = 1:length(thisSession.Clusters)
+tiledlayout(1,length(Stuning.Clusters));
+for cidx = 1:length(Stuning.Clusters)
     
-    C = thisSession.Clusters(cidx);
+    C = Stuning.Clusters(cidx);
     
     nexttile
     
@@ -201,7 +226,7 @@ for cidx = 1:length(thisSession.Clusters)
     RF.plot;
     set(gca,'xscale','log')
 end
-sgtitle(thisSession.Name)
+sgtitle(Stuning.Name)
 
-
+%%
 

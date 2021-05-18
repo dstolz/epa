@@ -67,12 +67,6 @@ classdef Session < handle
         
        
         
-        function e = find_event(obj,name)
-            if ischar(name), name = string(name); end
-            if iscellstr(name), name = cellfun(@string,name); end
-            
-            e = obj.Events(strcmpi([obj.Events.Name],name));
-        end
         
         
         function v = get.DistinctEventValues(obj)
@@ -89,6 +83,29 @@ classdef Session < handle
         
         function n = get.NEvents(obj)
             n = numel(obj.Events);
+        end
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        function e = find_Event(obj,name)
+            name = string(name);
+            e = obj.Events(strcmpi([obj.Events.Name],name));
+        end
+        
+        function c = find_Cluster(obj,name)
+            name = string(name);
+            c = obj.Clusters(strcmpi([obj.Clusters.Name],name));
+        end
+        
+        function s = find_Session(obj,name)
+            name = cellstr(name);
+            s = obj(contains(cellstr([obj.Name]),name));
         end
     end
     

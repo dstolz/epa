@@ -7,11 +7,10 @@ function par = plot_psth(obj,varargin)
 % window        ... [1x2] window relative to event onset in seconds, or
 %                   [1x1] window duration, default = [0 0.5]
 % normalization ... Determines how the histogram should be normalized,
-%                   values: 'count','firingrate','max'
+%                   values: 'count','firingrate','max','probability'
 %                   default = 'count'
 % showlegend    ... true/false, default = true
 % defaults
-
 
 
 
@@ -20,7 +19,9 @@ par.window        = [0 0.5];
 par.colormap      = [];
 par.normalization = 'count';
 par.showlegend    = false;
+par.showeventonset= true;
 par.ax = [];
+par.tiledlayout = [];
 
 par = epa.helper.parse_parameters(par,varargin);
 
@@ -41,11 +42,10 @@ if isempty(par.ax), par.ax = gca; end
 
 cla(par.ax,'reset');
 
-
 mustBeNonempty(par.event);
 
 if ~isa(par.event,'epa.Event')
-    par.event = obj.Session.find_event(par.event);
+    par.event = obj.Session.find_Event(par.event);
 end
 
 E = par.event; % copy handle to Event object
@@ -63,33 +63,24 @@ par.window = par.window(:)';
 
 
 
-
-switch lower(par.normalization)
-    case {'firingrate','fr'}
-        c = c ./ par.binsize;
-    case 'count'
-    case 'max'
-        c = c ./ max(c);
-end % otherwise just use counts
-
-
 cm = epa.helper.colormap(par.colormap,size(c,1));
 
 
 cla(par.ax,'reset');
 hold(par.ax,'on')
+
+if par.showeventonset
+    par.ploteventonset = line(par.ax,[0 0],[0 max(c(:))*1.1],'color',[0.6 0.6 0.6],'linewidth',1,'tag','ZeroMarker');
+end
+
 for i = 1:size(c,1)
     par.plot.path(i) = histogram(par.ax,'BinEdges',b,'BinCounts',c(i,:),'FaceColor',cm(i,:), ...
         'EdgeColor','none','EdgeAlpha',0.6, ...
+        'FaceAlpha',0.8, ...
         'DisplayName',sprintf('%s = %g%s',E.Name,uv(i),E.Units), ...
         'Tag',sprintf('%s = %g%s',E.Name,uv(i),E.Units));
 end
 hold(par.ax,'off')
-
-
-
-par.plot.eventonset = line(par.ax,[0 0],par.ax.YLim,'color',[0.6 0.6 0.6],'linewidth',1,'tag','ZeroMarker');
-uistack(par.plot.eventonset,'bottom');
 
 
 xlabel(par.ax,'time (s)');
@@ -97,10 +88,8 @@ xlabel(par.ax,'time (s)');
 switch lower(par.normalization)
     case {'firingrate','fr'}
         ylabel(par.ax,'firing rate (Hz)');
-    case 'count'
-        ylabel(par.ax,'count');
-    case 'max'
-        ylabel(par.ax,'normalized to max');
+    otherwise
+        ylabel(par.ax,par.normalization);
 end
         
 
@@ -108,6 +97,10 @@ title(par.ax,sprintf('Cluster %d - %s',obj.ID,E.Name));
 
 par.ax.XLim = par.window;
 box(par.ax,'on');
+
+par.ax.XAxis.TickDirection = 'out';
+
+axis(par.ax,'tight');
 
 if par.showlegend, legend(par.plot.path); end
 

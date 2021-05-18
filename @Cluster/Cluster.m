@@ -6,7 +6,7 @@ classdef Cluster < handle & dynamicprops
     
     properties
         ID       (1,1) uint16 {mustBeFinite}
-        Alias    string
+        Name     string
         Type     string {mustBeMember(Type,["SU","MSU","MU","Noise",""])} = ""
 
         SpikeTimes (:,1) double {mustBeFinite}
@@ -36,9 +36,9 @@ classdef Cluster < handle & dynamicprops
     methods
         [t,eidx,vid] = eventlocked(obj,varargin)
         [c,b,v] = psth(obj,varargin)
-        h = plot_psth(obj,varargin)
-        h = plot_raster(obj,varargin)
-        
+        par = plot_psth(obj,varargin)
+        par = plot_raster(obj,varargin)
+        par = plot_summary(obj,varargin)
         
         function obj = Cluster(SessionObj,ID,SpikeTimes,SpikeWaveforms)
             narginchk(2,4)
@@ -72,8 +72,8 @@ classdef Cluster < handle & dynamicprops
         function tstr = get.TitleStr(obj)
             if obj.TitleStr == ""
                 tstr = sprintf('%s [%d]',obj.Type,obj.ID);
-                if obj.Alias ~= ""
-                    tstr = sprintf('%s - %s',obj.Alias,tstr);
+                if obj.Name ~= ""
+                    tstr = sprintf('%s - %s',obj.Name,tstr);
                 end
             else
                 tstr = obj.TitleStr;
