@@ -102,8 +102,7 @@ par.ax.XLim = par.window;
 par.ax.YLim = [min(eidx)-1 max(eidx)+1];
 
 par.ax.XAxis.TickDirection = 'out';
-
-
+par.ax.YAxis.TickDirection = 'out';
 
 if par.showlegend
     legend(par.plot,'location','EastOutside');

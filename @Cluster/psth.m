@@ -4,7 +4,7 @@ function [c,b,uv] = psth(obj,varargin)
 % par is a structure:
 %  normalization ... Determines how the histogram should be normalized:
 %                   'count','firingrate','countdensity','probability','cumcount','cdf','pdf'
-%                   default = 'firingrate' (equivalent to countdensity)
+%                   default = 'count' (note that 'firingrate' is equivalent to 'countdensity')
 % 
 %   
 % Output:
@@ -15,7 +15,7 @@ function [c,b,uv] = psth(obj,varargin)
 
 par.binsize    = 0.01;
 par.eventvalue = 'all';
-par.normalization = 'firingrate';
+par.normalization = 'count';
 par.window     = [0 1];
 
 

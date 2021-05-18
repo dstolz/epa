@@ -30,10 +30,9 @@ if numel(obj) > 1
     origunits = par.parent.Units;
     par.parent.Units = 'normalized';
     spc = 0.05;
-    x = spc./2;
-    y = 0.1;
-    xd = 1./n-spc;
-    yd = 0.8;
+    x = spc./2; y = 0.1;
+    xd = 1./n-spc; yd = 0.8;
+    clo(par.parent);
     for i = 1:numel(obj)
         tmppar = par;
         tmppar.parent = uipanel(par.parent,'Position',[x y xd yd], ...

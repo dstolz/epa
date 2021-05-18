@@ -196,14 +196,15 @@ par.window = [-.5 1];
 par.normalization = 'probability';
 par.parent = gcf;
 par.parent.Color = 'w';
+
 par = Spost.Clusters.plot_summary(par);
 
-figure(gcf);
+figure(gcf); % raise the figure to the front
 
 
 
 
-%%
+%% Plot receptive fields
 
 Stuning = S.find_Session("Tuning");
 
@@ -216,7 +217,6 @@ for cidx = 1:length(Stuning.Clusters)
     C = Stuning.Clusters(cidx);
     
     nexttile
-    
     
     RF = epa.ReceptiveField(C,[xEvent yEvent]);
     RF.window = [0 0.1];

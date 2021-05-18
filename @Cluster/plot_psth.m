@@ -6,14 +6,15 @@ function par = plot_psth(obj,varargin)
 % binsize       ... scalar value in seconds, default = 0.01
 % window        ... [1x2] window relative to event onset in seconds, or
 %                   [1x1] window duration, default = [0 0.5]
-% normalization ... Determines how the histogram should be normalized,
-%                   values: 'count','firingrate','max','probability'
-%                   default = 'count'
+% normalization ... Determines how the histogram should be normalized:
+%                   'count','firingrate','countdensity','probability','cumcount','cdf','pdf'
+%                   default = 'count' (note that 'firingrate' is equivalent to 'countdensity')
 % showlegend    ... true/false, default = true
+
+
+
+
 % defaults
-
-
-
 par.binsize       = 0.01;
 par.window        = [0 0.5];
 par.colormap      = [];
@@ -99,6 +100,7 @@ par.ax.XLim = par.window;
 box(par.ax,'on');
 
 par.ax.XAxis.TickDirection = 'out';
+par.ax.YAxis.TickDirection = 'out';
 
 axis(par.ax,'tight');
 
