@@ -4,7 +4,7 @@ classdef Session < handle
         Clusters (1,:) epa.Cluster  % An array of Cluster objects
         Events   (1,:) epa.Event    % An array of Event objects
         
-        Name     (1,1) string = "NO NAME" % Session name
+        Name     (1,1) string       % Session name
         Date     (1,1) string       % Session date
         Time     (1,1) string       % Session start time
         
