@@ -39,11 +39,11 @@ classdef DataViewer < handle
             h.SelectEvent1.Object  = cS.Events;
             if length(cS.Events) > 1
                 r = h.SelectEvent2.handle.Layout.Row;
-                h.LeftGrid.RowHeight{r} = 25;
+                h.GridNav.RowHeight{r} = 25;
                 h.SelectEvent2.Object  = cS.Events;
                 h.SelectEvent2.CurrentObject  = cS.Events(2);
             else
-                h.LeftGrid.RowHeight{h.SelectEvent2.handle.Layout.Row} = 0;
+                h.GridNav.RowHeight{h.SelectEvent2.handle.Layout.Row} = 0;
             end
         end
         
@@ -52,7 +52,10 @@ classdef DataViewer < handle
         end
         
         function select_cluster_updated(obj,src,event)
-
+            % TESTING
+            h = obj.handles;
+            cobj = h.SelectCluster.CurrentObject;
+            cobj.plot_summary('parent',h.PanelPlots,'event',h.SelectEvent1.CurrentObject);
         end
         
         function create(obj)
@@ -61,23 +64,37 @@ classdef DataViewer < handle
             obj.handles.Figure = f;
             
             g = uigridlayout(f);            
-            g.ColumnWidth = {200, 120, '1x'};
-            g.RowHeight   = {'1x'};
+            g.ColumnWidth = {200, '1x'};
+            g.RowHeight   = {'0.2x','0.8x'};
             obj.handles.MainGrid = g;
 
                         
-            gLeft = uigridlayout(g);
-            gLeft.ColumnWidth = {'.8x','.2x'};
-            gLeft.RowHeight = repmat({25},1,5);
-            obj.handles.LeftGrid = gLeft;
+            gNav = uigridlayout(g);
+            gNav.Layout.Row = [1 2];
+            gNav.Layout.Column = 1;
+            gNav.ColumnWidth = {'1x',25};
+            gNav.RowHeight = repmat({25},1,5);
+            obj.handles.GridNav = gNav;
             
-            h = epa.ui.SelectObject(gLeft,'epa.Session');
+            gPlots = uigridlayout(g);
+            gPlots.Layout.Row = 2;
+            gPlots.Layout.Column = 2;
+            gPlots.ColumnWidth = {'1x'};
+            gPlots.RowHeight = {'1x'};
+            obj.handles.GridPlots = gPlots;
+            
+            
+            h = uipanel(gPlots);
+            obj.handles.PanelPlots = h;
+            
+            
+            h = epa.ui.SelectObject(gNav,'epa.Session');
             h.handle.Layout.Row = 1;
             h.handle.Layout.Column = 1;
             h.handle.Tooltip = 'Select a Session';
             obj.handles.SelectSession = h;
             
-            h = uibutton(gLeft);
+            h = uibutton(gNav);
             h.Layout.Row = 1;
             h.Layout.Column = 2;
             h.Text = '...';
@@ -87,7 +104,7 @@ classdef DataViewer < handle
             
 
             
-            h = epa.ui.SelectObject(gLeft,'epa.Cluster','uilistbox');
+            h = epa.ui.SelectObject(gNav,'epa.Cluster','uilistbox');
             h.handle.Layout.Row = [2 4];
             h.handle.Layout.Column = 1;
             h.handle.Multiselect = 'on';
@@ -97,20 +114,20 @@ classdef DataViewer < handle
             
             
             
-            h = epa.ui.SelectObject(gLeft,'epa.Event','uidropdown');
+            h = epa.ui.SelectObject(gNav,'epa.Event','uidropdown');
             h.handle.Layout.Row = 5;
             h.handle.Layout.Column = 1;
             h.handle.Tooltip = 'Select Event 1';
             obj.handles.SelectEvent1 = h;
             
-            h = epa.ui.SelectObject(gLeft,'epa.Event','uidropdown');
+            h = epa.ui.SelectObject(gNav,'epa.Event','uidropdown');
             h.handle.Layout.Row = 6;
             h.handle.Layout.Column = 1;
             h.handle.Tooltip = 'Select Event 2';
             obj.handles.SelectEvent2 = h;
             
             
-            set(allchild(gLeft), ...
+            set(allchild(gNav), ...
                 'FontName','Consolas', ...
                 'FontSize',12);
             
