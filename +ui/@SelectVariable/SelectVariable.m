@@ -60,7 +60,7 @@ classdef SelectVariable < handle
             else
                 ind = ismember({a.class},obj.variableClass);
             end
-            a = {a(ind).name};
+            a = [a(ind).name];
         end
         
         function value_changed(obj,src,evnt)
@@ -69,12 +69,12 @@ classdef SelectVariable < handle
         
         function refresh(obj,src,event)
             v = obj.AvailableVars;
+            
+            if isempty(v), v = "---"; end
+            
             obj.handle.Items = v;
-            if isempty(v)
-                obj.handle.Value = {};
-            else
-                obj.handle.Value = v{1};
-            end
+            obj.handle.ItemsData = obj.Object;
+            obj.handle.Value = obj.Object(1);
         end
     end
     

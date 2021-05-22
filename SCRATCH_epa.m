@@ -35,6 +35,7 @@ for i = 1:length(BPfileroot)
         ind = ST{j} > BPtimes(i) & ST{j} <= BPtimes(i+1);
         xx = ST{j}(ind) - BPtimes(i); % recording block starts at 0 seconds
         S(i).add_Cluster(j,xx);
+        S(i).Clusters(end).Type = "SU"; % mark as single unit
         S(i).Clusters(end).Name = clusterAlias{j};
     end
 end
@@ -121,9 +122,7 @@ for t = 1:length(d)
         onoffs = [e.onset e.offset];
         S(ind).add_Event(eventNames{i}, onoffs, e.data);
     end
-    fprintf(' done\n')
-    
-    
+    fprintf(' done\n')    
 end
 
 
@@ -152,11 +151,11 @@ S(2).Clusters(3).plot_raster('event',"AMdepth");
 
 
 %% Example 1b - Using parameter structure for input
-
+clf
 par = [];
 par.event = "AMdepth";
 par.eventvalue = 0.5;
-par.window = [-0.2 1];
+par.window    = [-0.2 1];
 par.showlegend = false;
 
 
@@ -192,7 +191,7 @@ Spost = S.find_Session("Post"); % find the "Passive-Post-210227-125506" session
 par = [];
 par.event = "AMdepth";
 par.eventvalue = 0.5;
-par.window = [-.5 1];
+par.window = [-1 1];
 par.normalization = 'probability';
 par.parent = gcf;
 par.parent.Color = 'w';
@@ -211,21 +210,25 @@ Stuning = S.find_Session("Tuning");
 xEvent = Stuning.find_Event("Freq");
 yEvent = Stuning.find_Event("Levl");
 
-tiledlayout(1,length(Stuning.Clusters));
-for cidx = 1:length(Stuning.Clusters)
-    
-    C = Stuning.Clusters(cidx);
-    
-    nexttile
+
+clf
+
+tiledlayout('flow');
+
+for C = [Stuning.Clusters]
+    ax = nexttile;
     
     RF = epa.ReceptiveField(C,[xEvent yEvent]);
-    RF.window = [0 0.1];
-    RF.metric = 'mean';
-    RF.plotstyle = 'imagesc';
-    RF.smoothmethod = 'interpft';
+    RF.ax           = ax;
+    RF.window       = [0 0.1];
+    RF.metric       = 'mean';
+    RF.plotstyle    = 'surf';
+    RF.smoothdata   = 3;
     RF.plot;
-    set(gca,'xscale','log')
+    
+    ax.XScale = 'log';
 end
+
 sgtitle(Stuning.Name)
 
 %%

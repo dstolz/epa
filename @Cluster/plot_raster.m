@@ -122,13 +122,13 @@ title(par.ax,sprintf('Cluster %d - %s',obj.ID,E.Name));
 
 box(par.ax,'on');
 
-
-if nargout == 0, clear par; end
+epa.helper.setfont(par.ax);
 
 % uncertain why, but this needs to be at the end to work properly
 drawnow
-set(par.plot.MarkerHandle,'Style','vbar');
+set([par.plot.MarkerHandle],'Style','vbar');
 
+if nargout == 0, clear par; end
 
 
 

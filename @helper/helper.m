@@ -48,5 +48,12 @@ classdef helper < handle
                 cm = cm(1:n,:);
             end
         end
+        
+        function setfont(h)
+            fnt = getpref('epa','FontName','Consolas');
+            
+            hs = findobj(h,'-property','FontName');
+            set(hs,'FontName',fnt);
+        end
     end
 end

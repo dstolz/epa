@@ -10,11 +10,11 @@ classdef ReceptiveField < handle
         plotstyle   (1,:) char {mustBeMember(plotstyle,{'surf','imagesc','contourf','contour'})} = 'contour';
         colormap = @parula;
         
-        smoothmethod (1,:) char
+        smoothdata (1,1) double {mustBeNonnegative,mustBeFinite} = 0;
     end
     
     
-    properties (SetAccess = protected)
+    properties
         ax
     end
     
@@ -45,12 +45,24 @@ classdef ReceptiveField < handle
         
         
         
-        function x = get.xValues(obj)
-            x = obj.xEvent.DistinctValues;
+        function d = get.xValues(obj)
+            d = obj.xEvent.DistinctValues;
+            if obj.smoothdata
+                n = length(d);
+                x = 1:n;
+                xi = linspace(1,n,n*obj.smoothdata);
+                d = interp1(x,d,xi,'makima');
+            end
         end
         
-        function y = get.yValues(obj)
-            y = obj.yEvent.DistinctValues;
+        function d = get.yValues(obj)
+            d = obj.yEvent.DistinctValues;
+            if obj.smoothdata
+                n = length(d);
+                x = 1:n;
+                xi = linspace(1,n,n*obj.smoothdata);
+                d = interp1(x,d,xi,'makima');
+            end
         end
         
         function xe = get.xEvent(obj)
@@ -77,8 +89,8 @@ classdef ReceptiveField < handle
                 sc(i) = sum(ind);
             end
                         
-            ev_y = obj.yEvent.Values; uev_y = obj.yValues;
-            ev_x = obj.xEvent.Values; uev_x = obj.xValues;
+            ev_y = obj.yEvent.Values; uev_y = unique(ev_y);
+            ev_x = obj.xEvent.Values; uev_x = unique(ev_x);
             d = zeros(length(uev_y),length(uev_x));
             for i = 1:length(uev_y)
                 for j = 1:length(uev_x)
@@ -87,14 +99,27 @@ classdef ReceptiveField < handle
                 end
             end
             
-            [m,n] = size(d);
-            switch obj.smoothmethod
-                case 'interpft'
-                    d = interpft(d,3*m,1);
-                    d = interpft(d,3*n,2);
+            if obj.smoothdata
+                [m,n] = size(d);
+                d = interpft(d,obj.smoothdata*m,1);
+                d = interpft(d,obj.smoothdata*n,2);
             end
         end
         
+        
+        function cm = get.colormap(obj)
+            switch class(obj.colormap)
+                case 'function_handle'
+                    cm = feval(obj.colormap);
+                    
+                case 'char'
+                    cm = feval(obj.colormap);
+                    
+                otherwise
+                    cm = obj.colormap;
+            end
+
+        end
         
         
         function h = plot(obj,ax)
@@ -103,29 +128,31 @@ classdef ReceptiveField < handle
             
             h = obj.(['plot_' obj.plotstyle]);
             
-            obj.label_axes;
+            colormap(ax,obj.colormap); %#ok<CPROPLC>
             
             axis(ax,'tight');
-            
+
+            obj.label_axes;
+                        
             if nargout == 0, clear h; end
-            
         end
+        
+    end
+   
+    methods (Access = protected)
+        
         
         function h = plot_contour(obj,ax)
             if nargin < 2, ax = gca; end            
-            
             [mx,my] = meshgrid(obj.xValues,obj.yValues);
-            h = contour(ax,my,mx,obj.data);
-            ax.Colormap = obj.colormap;
+            h = contour(ax,mx,my,obj.data);
         end
         
         
         function h = plot_contourf(obj,ax)
             if nargin < 2, ax = gca; end            
-            
             [mx,my] = meshgrid(obj.xValues,obj.yValues);
-            h = contourf(ax,my,mx,obj.data);
-            ax.Colormap = obj.colormap;
+            h = contourf(ax,mx,my,obj.data);
         end
         
         function h = plot_surf(obj,ax)
@@ -139,19 +166,21 @@ classdef ReceptiveField < handle
             ax.YDir = 'normal';
         end
         
-    end
-   
-    methods (Access = protected)
         function label_axes(obj)
-            ax = obj.ax;
+            oax = obj.ax;
             
-            ax.XAxis.Label.Interpreter = 'none';
-            ax.YAxis.Label.Interpreter = 'none';
-            ax.XAxis.Label.String = obj.xEvent.Name;
-            ax.YAxis.Label.String = obj.yEvent.Name;
+            oax.XAxis.Label.Interpreter = 'none';
+            oax.YAxis.Label.Interpreter = 'none';
+            oax.ZAxis.Label.Interpreter = 'none';
             
-            ax.Title.Interpreter = 'none';
-            ax.Title.String = obj.Cluster.TitleStr;
+            oax.XAxis.Label.String = obj.xEvent.Name;
+            oax.YAxis.Label.String = obj.yEvent.Name;
+            oax.ZAxis.Label.String = obj.metric;
+            
+            oax.Title.Interpreter = 'none';
+            oax.Title.String = obj.Cluster.TitleStr;
+            
+            epa.helper.setfont(oax);
         end
     end
 end

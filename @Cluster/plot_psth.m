@@ -106,6 +106,8 @@ axis(par.ax,'tight');
 
 if par.showlegend, legend(par.plot.path); end
 
+epa.helper.setfont(par.ax);
+
 if nargout == 0, clear par; end
 
 
