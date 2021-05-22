@@ -26,6 +26,7 @@ if isempty(par.parent), par.parent = figure; end
 
 
 if numel(obj) > 1
+    par = rmfield(par,'tiledlayout');
     n = numel(obj);
     origunits = par.parent.Units;
     par.parent.Units = 'normalized';
@@ -46,7 +47,7 @@ if numel(obj) > 1
 end
 
 
-if ~isempty(par.tiledlayout)
+if ~isempty(par.tiledlayout) && isvalid(par.tiledlayout)
     par.parent = nexttile(par.tiledlayout);
 end
 

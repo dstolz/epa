@@ -22,6 +22,7 @@ classdef Session < handle
         NClusters
         NEvents
         DistinctEventValues
+        Summary
     end
     
     methods
@@ -30,7 +31,6 @@ classdef Session < handle
             if nargin >= 1 && ~isempty(SamplingRate), obj.SamplingRate = SamplingRate; end
             if nargin >= 2 && isa(Clusters,'epa.Cluster'), obj.Clusters = Clusters; end
             if nargin >= 3 && isa(Events,'epa.Event'), obj.Events = Events; end
-            
         end
         
         function add_Event(obj,varargin)
@@ -85,7 +85,15 @@ classdef Session < handle
             n = numel(obj.Events);
         end
         
-        
+        function s = get.Summary(obj)
+            s{1,1} = obj.Name;
+            s{2,1} = sprintf('Date: %s',obj.Date);
+            s{3} = sprintf('Time: %s',obj.Time);
+            s{4} = sprintf('Research: %s',obj.Researcher);
+            s{5} = sprintf('Sampling Rate: %.5f Hz',obj.SamplingRate);
+            s{6} = sprintf('%d Events',obj.NEvents);
+            s{7} = sprintf('%d Clusters',obj.NClusters);
+        end
         
         
         

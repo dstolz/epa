@@ -35,7 +35,7 @@ if numel(obj) > 1
 end
 
 
-if ~isempty(par.tiledlayout)
+if ~isempty(par.tiledlayout) && isvalid(par.tiledlayout)
     par.ax = nexttile(par.tiledlayout);
 end
 

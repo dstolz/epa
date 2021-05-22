@@ -39,7 +39,7 @@ if numel(obj) > 1
     return
 end
 
-if ~isempty(par.tiledlayout)
+if ~isempty(par.tiledlayout) && isvalid(par.tiledlayout)
     par.ax = nexttile(par.tiledlayout);
 end
 
@@ -88,6 +88,7 @@ if par.showeventonset
     par.ploteventonset = line(par.ax,[0 0],[0 max(eidx)+1],'color',[0.6 0.6 0.6],'linewidth',1,'tag','ZeroMarker');
 end
 
+if isfield(par,'plot'), par = rmfield(par,'plot'); end
 for i = 1:length(uv)
     ind = uv(i) == v;
     par.plot(i) = line(par.ax,t(ind),eidx(ind),'color',cm(i,:), ...
