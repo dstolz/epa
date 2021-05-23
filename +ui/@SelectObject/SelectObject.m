@@ -74,22 +74,21 @@ classdef SelectObject < handle
             notify(obj,'Updated',evnt);
         end
         
-        function [v,o] = AvailableVars(obj)
+        function v = AvailableVars(obj)
             v = [];
             if isa(obj.Object,obj.ObjectClass)
-                [v,idx] = sort([obj.Object.Name]);
-                o = obj.Object(idx);
+                v = [obj.Object.Name];
             end
         end
         
         function refresh(obj,src,event)
-            [v,o] = obj.AvailableVars;
+            v = obj.AvailableVars;
             
             if isempty(v), v = ""; end
             
             obj.handle.Items = v;
-            obj.handle.ItemsData = o;
-            obj.handle.Value = o(1);
+            obj.handle.ItemsData = obj.Object;
+            obj.handle.Value = obj.Object(1);
         end
         
         function h = create(obj)
