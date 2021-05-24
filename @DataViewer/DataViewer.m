@@ -2,16 +2,12 @@ classdef DataViewer < handle
     
     properties (SetObservable = true)
         Session
-        ClusterIdx
-        RF
-        
         Par
     end
     
     
     properties (Access = protected)
         handles
-        ParOut
     end
     
     
@@ -75,18 +71,50 @@ classdef DataViewer < handle
         
         
         function plot(obj,src,event)
-            f = figure('Name',obj.curSession.Name,'NumberTitle','off');
+            S = obj.curSession;
+            C = obj.curClusters;
+            E = obj.curEvent1;
+            
+            f = figure('NumberTitle','off');
             f.Color = 'w';
             
             par = obj.Par;
-            par.event = obj.curEvent1;
+            par.event      = E.Name;
             par.eventvalue = obj.handles.SelectEvent1Values.Value;
             
             par.parent = f;
+                        
+            m = length(S);
+            n = length(C);
             
-            obj.Par = par;
+            t = tiledlayout(m,n);
+                        
+            for s = 1:length(S)
+                for c = 1:length(C)
+                    
+                    ax = nexttile(t);
+                    par.ax = ax;
+                    par.showlegend = false;
+                    
+                    SC = S(s).find_Cluster(C(c).Name);
+                    
+                    parout = feval(obj.curPlotStyle,SC,par);
+                    
+                    set(par.ax,'UserData',parout);
+                    
+                    if c == 1
+                        ax.YAxis.Label.String = {S(s).Name,ax.YAxis.Label.String};
+                    end
+                    
+                    if s == 1
+                        ax.Title.String = SC.Name;
+                    else
+                        ax.Title.String = "";
+                    end
+                end
+            end
             
-            obj.ParOut = feval(obj.curPlotStyle,obj.curClusters,par);
+            
         end
         
         
@@ -135,35 +163,62 @@ classdef DataViewer < handle
                 h.SelectSession.handle.Items = ann;
             end
             
-            cS = h.SelectSession.CurrentObject;
+            S = h.SelectSession.CurrentObject;
             
-            if isempty(cS)
+            if isempty(S)
                 h.SelectEvent1.handle.Enable ='off';
                 h.SelectEvent2.handle.Enable ='off';
                 return
             end
             
-            h.SelectClusters.Object = cS.Clusters;
-            
-            h.SelectEvent1.Object  = cS.Events;
-            obj.select_event_updated(h.SelectEvent1);
             
             
-            h.SelectSession.handle.Enable = 'on';
+            h.SelectSession.handle.Enable  = 'on';
             h.SelectClusters.handle.Enable = 'on';
-            h.SelectEvent1.handle.Enable ='on';
-            h.SelectEvent2.handle.Enable ='on';
-            h.SelectEvent1Values.Enable = 'on';
-            h.SelectEvent2Values.Enable = 'on';
+            h.SelectEvent1.handle.Enable   = 'on';
+            h.SelectEvent2.handle.Enable   = 'on';
+            h.SelectEvent1Values.Enable    = 'on';
+            h.SelectEvent2Values.Enable    = 'on';
             
-            if length(cS.Events) > 1
-                h.SelectEvent2.Object  = cS.Events;
-                h.SelectEvent2.CurrentObject  = cS.Events(2);
+            
+            C = S.common_Clusters;
+            E = S.common_Events;
+            
+            
+            if isempty(C)
+                h.SelectClusters.handle.Enable = 'off';
+                uialert(h.Figure,'No Clusters were found to be in common across the selected Sessions.', ...
+                    'No Clusters','Icon','warning','Modal',true);
+                return
+            end
+            
+            if isempty(E)
+                h.SelectEvent1.handle.Enable   = 'off';
+                h.SelectEvent2.handle.Enable   = 'off';
+                h.SelectEvent1Values.Enable    = 'off';
+                h.SelectEvent2Values.Enable    = 'off';
+                uialert(h.Figure,'No Events were found to be in common across the selected Sessions.', ...
+                    'No Events','Icon','warning','Modal',true);
+                return
+            end
+                
+                
+            
+            h.SelectClusters.Object = C;
+            h.SelectEvent1.Object   = E;
+            
+            
+            
+            obj.select_event_updated(h.SelectEvent1);
+            if length(E) > 1
+                h.SelectEvent2.Object  = E;
+                h.SelectEvent2.CurrentObject = E(2);
                 obj.select_event_updated(h.SelectEvent2);
             else
                 h.SelectEvent2.handle.Enable = 'off';
                 h.SelectEvent2Values.Enable = 'off';
             end
+
         end
         
         function select_event_updated(obj,src,event)

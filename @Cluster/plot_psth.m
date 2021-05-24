@@ -16,7 +16,7 @@ function par = plot_psth(obj,varargin)
 
 % defaults
 par.binsize       = 0.01;
-par.window        = [0 0.5];
+par.window        = [0 1];
 par.colormap      = [];
 par.normalization = 'count';
 par.showlegend    = false;
@@ -75,8 +75,12 @@ if par.showeventonset
 end
 
 for i = 1:size(c,1)
-    par.plot.path(i) = histogram(par.ax,'BinEdges',b,'BinCounts',c(i,:),'FaceColor',cm(i,:), ...
-        'EdgeColor','none','EdgeAlpha',0.6, ...
+    par.plot.path(i) = histogram(par.ax, ...
+        'BinEdges',b, ...
+        'BinCounts',c(i,:), ...
+        'FaceColor',cm(i,:), ...
+        'EdgeColor','none', ...
+        'EdgeAlpha',0.6, ...
         'FaceAlpha',0.8, ...
         'DisplayName',sprintf('%s = %g%s',E.Name,uv(i),E.Units), ...
         'Tag',sprintf('%s = %g%s',E.Name,uv(i),E.Units));
@@ -94,10 +98,10 @@ switch lower(par.normalization)
 end
         
 
-title(par.ax,sprintf('Cluster %d - %s',obj.ID,E.Name));
+title(par.ax,{obj.Session.Name,sprintf('%s [%s] - %s',obj.Name,obj.Type,E.Name)});
 
 par.ax.XLim = par.window;
-box(par.ax,'on');
+% box(par.ax,'on');
 
 par.ax.XAxis.TickDirection = 'out';
 par.ax.YAxis.TickDirection = 'out';

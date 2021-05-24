@@ -121,7 +121,7 @@ xlabel(par.ax,'time (s)');
 
 title(par.ax,sprintf('Cluster %d - %s',obj.ID,E.Name));
 
-box(par.ax,'on');
+% box(par.ax,'on');
 
 epa.helper.setfont(par.ax);
 

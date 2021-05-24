@@ -79,7 +79,6 @@ classdef Cluster < handle & dynamicprops
                 tstr = obj.TitleStr;
             end
         end
-        
     end
 end
                 

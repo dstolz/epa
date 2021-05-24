@@ -115,6 +115,31 @@ classdef Session < handle
             name = cellstr(name);
             s = obj(contains(cellstr([obj.Name]),name));
         end
+        
+        
+        
+        function c = common_Clusters(obj)
+            C = [obj.Clusters];
+            [~,ia,ib] = unique([C.Name]);
+            
+            s = arrayfun(@(x) sum(x == ib),ia);
+            ind = s == length(obj);
+            
+            c = C(ia(ind));
+        end
+        
+        
+        function c = common_Events(obj)
+            E = [obj.Events];
+            [~,ia,ib] = unique([E.Name]);
+            
+            s = arrayfun(@(x) sum(x == ib),ia);
+            ind = s == length(obj);
+            
+            c = E(ia(ind));
+        end
+        
+        
     end
     
 end

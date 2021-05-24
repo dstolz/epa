@@ -67,7 +67,6 @@ classdef Event < handle
                 oot(~ind,:) = [];
             end
         end
+        
     end
-    
-    
 end
