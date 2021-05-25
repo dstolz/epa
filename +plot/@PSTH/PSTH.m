@@ -64,6 +64,7 @@ classdef PSTH < handle & dynamicprops
             E = obj.event;
 
             par = epa.helper.obj2par(obj);
+            
             [c,b,uv] = C.psth(par);
             
             
