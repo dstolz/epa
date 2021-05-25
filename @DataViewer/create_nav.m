@@ -87,7 +87,7 @@ obj.handles.SelectEvent2Values = h;
 % Plot
 PlotGrid = uigridlayout(g);
 PlotGrid.ColumnWidth = {'1x','1x'};
-PlotGrid.RowHeight = {25,'1x'};
+PlotGrid.RowHeight = {25,'1x',25};
 PlotGrid.Padding = [0 0 0 0];
 PlotGrid.Layout.Column = 4;
 PlotGrid.Layout.Row = [1 length(g.RowHeight)];
@@ -105,11 +105,16 @@ h.Layout.Column = 2;
 h.Text = 'Plot';
 h.ButtonPushedFcn = @obj.plot;
 
-h = uitree(PlotGrid);
+h = uilistbox(PlotGrid);
 h.Layout.Row = 2;
 h.Layout.Column = [1 2];
-obj.handles.ParameterTree = h;
+obj.handles.ParameterList = h;
 
+h = uieditfield(PlotGrid);
+h.Layout.Row = 3;
+h.Layout.Column = [1 2];
+h.ValueChangedFcn = @obj.parameter_edit;
+obj.handles.ParameterEdit = h;
 
 
 h = obj.handles;

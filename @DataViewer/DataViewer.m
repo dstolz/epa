@@ -197,16 +197,43 @@ classdef DataViewer < handle
             
         end
         
+        function select_parameter(obj,src,event)
+            h = obj.handles;
+            
+            pv = h.ParameterList.Value;
+            
+            h.ParameterEdit.Value = obj.Par.(pv);
+        end
+        
+        function parameter_edit(obj,src,event)
+            h = obj.handles;
+            
+            v = h.ParameterList.Value;
+            
+            nv = event.NewValue;
+            
+            try
+                obj.Par.(v) = nv;
+            catch me
+                h.ParameterEdit.Value = event.PreviousValue;
+            end
+        end
+        
         
         function plot_style_value_changed(obj,src,event)
             %TODO: UPDATE RELEVANT PARAMETERS. MAYBE WITH CMD LINE ACCESS??
-            % *** MAKE PLOT FUNCTIONS THEIR OWN CLASSES ***
-%             h = obj.handles;
-%             switch h.SelectPlotStyle.String
-%                 case 'raster'
-%                     
-%                 case 'psth'
-                    
+            h = obj.handles;
+            
+            pst = h.SelectPlotStyle.Value;
+                
+            pst = ['epa.plot.' pst];
+            
+            p = properties(pst);
+            
+            p(ismember(p,{'Cluster','ax','parent','handles'})) = [];
+            
+            h.ParameterList.Items = p;
+%             h.Par =  
         end
     end
     
