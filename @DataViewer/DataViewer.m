@@ -21,6 +21,7 @@ classdef DataViewer < handle
     
     methods
         create_nav(obj);
+        plot(obj,src,event);
         
         function obj = DataViewer()
             obj.create_nav;
@@ -70,52 +71,7 @@ classdef DataViewer < handle
         end
         
         
-        function plot(obj,src,event)
-            S = obj.curSession;
-            C = obj.curClusters;
-            E = obj.curEvent1;
-            
-            f = figure('NumberTitle','off');
-            f.Color = 'w';
-            
-            par = obj.Par;
-            par.event      = E.Name;
-            par.eventvalue = obj.handles.SelectEvent1Values.Value;
-            
-            par.parent = f;
-                        
-            m = length(S);
-            n = length(C);
-            
-            t = tiledlayout(m,n);
-                        
-            for s = 1:length(S)
-                for c = 1:length(C)
-                    
-                    ax = nexttile(t);
-                    par.ax = ax;
-                    par.showlegend = false;
-                    
-                    SC = S(s).find_Cluster(C(c).Name);
-                    
-                    parout = feval(obj.curPlotStyle,SC,par);
-                    
-                    set(par.ax,'UserData',parout);
-                    
-                    if c == 1
-                        ax.YAxis.Label.String = {S(s).Name,ax.YAxis.Label.String};
-                    end
-                    
-                    if s == 1
-                        ax.Title.String = SC.Name;
-                    else
-                        ax.Title.String = "";
-                    end
-                end
-            end
-            
-            
-        end
+        
         
         
         
@@ -128,11 +84,10 @@ classdef DataViewer < handle
     
     methods (Access = private)
         function create_plotdropdown(obj,src,event)
-            %TODO: GENERATE THIS LIST FROM CLUSTER/RF OBJECT METADATA
-            plottypes = {'summary','psth','raster'};
-            src.Items = plottypes;
-            src.ItemsData = cellfun(@(a) str2func(sprintf('plot_%s',a)),plottypes,'uni',0);
-            src.Value = @plot_summary;
+            plottypes = epa.helper.plot_types;
+            src.Items     = plottypes;
+            src.ItemsData = plottypes;
+            src.Value     = 'PSTH';
         end
         
         
@@ -235,9 +190,7 @@ classdef DataViewer < handle
         end
         
         function select_cluster_updated(obj,src,event)
-            % TESTING
-            h = obj.handles;
-            cobj = h.SelectClusters.CurrentObject;
+            
         end
         
         function process_keys(obj,src,event)
@@ -247,6 +200,13 @@ classdef DataViewer < handle
         
         function plot_style_value_changed(obj,src,event)
             %TODO: UPDATE RELEVANT PARAMETERS. MAYBE WITH CMD LINE ACCESS??
+            % *** MAKE PLOT FUNCTIONS THEIR OWN CLASSES ***
+%             h = obj.handles;
+%             switch h.SelectPlotStyle.String
+%                 case 'raster'
+%                     
+%                 case 'psth'
+                    
         end
     end
     

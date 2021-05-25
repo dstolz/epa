@@ -19,6 +19,7 @@ classdef helper < handle
                     varargin = [fn'; fv'];
                     varargin = varargin(:)';
                     
+                    
                 elseif iscell(varargin)
                     % might be passed as a varargin, instead of varargin{:}
                     varargin = varargin{:};
@@ -31,9 +32,15 @@ classdef helper < handle
             end
         end
         
-        
+        function par = obj2par(obj)
+            p = properties(obj);
+            for i = 1:length(p)
+                par.(p{i}) = obj.(p{i});
+            end
+        end
         
         function cm = colormap(cm,n)
+            
             if isempty(cm)
                 if n == 1
                     cm = [0 0 0];
@@ -49,11 +56,22 @@ classdef helper < handle
             end
         end
         
-        function setfont(h)
+        function setfont(h,sz)
+            if nargin < 2 || isempty(sz), sz = 10; end
             fnt = getpref('epa','FontName','Consolas');
-            
             hs = findobj(h,'-property','FontName');
-            set(hs,'FontName',fnt);
+            set(hs,'FontName',fnt,'FontSize',sz);
+        end
+        
+        function t = plot_types
+           pt = fullfile(epa.helper.rootdir,'+epa','+plot','@*');
+           d = dir(pt);
+           t = {d.name};
+           t = cellfun(@(a) a(2:end),t,'uni',0);
+        end
+        
+        function rd = rootdir
+            rd = fileparts(fileparts(fileparts(which('epa.helper'))));
         end
     end
 end
