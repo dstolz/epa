@@ -108,6 +108,7 @@ h.ButtonPushedFcn = @obj.plot;
 h = uilistbox(PlotGrid);
 h.Layout.Row = 2;
 h.Layout.Column = [1 2];
+h.ValueChangedFcn = @obj.select_parameter;
 obj.handles.ParameterList = h;
 
 h = uieditfield(PlotGrid);
@@ -134,3 +135,4 @@ addlistener(h.SelectClusters,'Updated',@obj.select_cluster_updated);
 
 obj.select_session_updated('init');
 
+obj.plot_style_value_changed;

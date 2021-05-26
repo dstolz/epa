@@ -8,6 +8,7 @@ classdef DataViewer < handle
     
     properties (Access = protected)
         handles
+        plotMeta
     end
     
     
@@ -125,9 +126,7 @@ classdef DataViewer < handle
                 h.SelectEvent2.handle.Enable ='off';
                 return
             end
-            
-            
-            
+                        
             h.SelectSession.handle.Enable  = 'on';
             h.SelectClusters.handle.Enable = 'on';
             h.SelectEvent1.handle.Enable   = 'on';
@@ -156,14 +155,10 @@ classdef DataViewer < handle
                     'No Events','Icon','warning','Modal',true);
                 return
             end
-                
-                
-            
+                            
             h.SelectClusters.Object = C;
             h.SelectEvent1.Object   = E;
-            
-            
-            
+                        
             obj.select_event_updated(h.SelectEvent1);
             if length(E) > 1
                 h.SelectEvent2.Object  = E;
@@ -177,7 +172,6 @@ classdef DataViewer < handle
         end
         
         function select_event_updated(obj,src,event)
-            
             h = obj.handles.(sprintf('%sValues',src.handle.Tag));
             
             dv = src.CurrentObject.DistinctValues;
@@ -186,7 +180,6 @@ classdef DataViewer < handle
             h.Items     = dvstr;
             h.ItemsData = dv;
             h.Value     = dv;
-                
         end
         
         function select_cluster_updated(obj,src,event)
@@ -202,38 +195,75 @@ classdef DataViewer < handle
             
             pv = h.ParameterList.Value;
             
-            h.ParameterEdit.Value = obj.Par.(pv);
+            h.ParameterEdit.Value = mat2str(obj.Par.(pv));
         end
         
         function parameter_edit(obj,src,event)
             h = obj.handles;
             
-            v = h.ParameterList.Value;
+            p = h.ParameterList.Value;
             
-            nv = event.NewValue;
+            nv = event.Value;
             
-            try
-                obj.Par.(v) = nv;
-            catch me
+            mp = obj.plotMeta.PropertyList;
+            
+            
+            if isnumeric(obj.Par.(p)) || islogical(obj.Par.(p))
+                nv = str2num(nv);
+            end
+            
+            ind = ismember({mp.Name},p);
+            m = mp(ind);
+            
+            
+
+            if isValidValue(m.Validation,nv)
+                obj.Par.(p) = nv;
+                src.BackgroundColor = [0.4 1 0.4]; 
+                pause(0.3);
+                src.BackgroundColor = [1 1 1];
+            else
+                src.BackgroundColor = [1 0.4 0.4];
+                pause(0.3);
+                src.BackgroundColor = [1 1 1];
                 h.ParameterEdit.Value = event.PreviousValue;
             end
+            
         end
         
         
         function plot_style_value_changed(obj,src,event)
-            %TODO: UPDATE RELEVANT PARAMETERS. MAYBE WITH CMD LINE ACCESS??
             h = obj.handles;
             
             pst = h.SelectPlotStyle.Value;
                 
             pst = ['epa.plot.' pst];
             
-            p = properties(pst);
+            tmpObj = feval(pst,obj.curClusters(1));
             
-            p(ismember(p,{'Cluster','ax','parent','handles'})) = [];
+            M = metaclass(tmpObj);
+            
+            obj.plotMeta = M;
+            
+            p = M.PropertyList;
+            ind = ismember({p.SetAccess},'public');
+            ind = ind & ~[p.Constant];
+            p(~ind) = [];
+            p = {p.Name};
+                        
+            p(ismember(p,{'Cluster','ax','parent','handles', ...
+                'DataFormat','event','eventvalue', ...
+                'eventx','eventxvalue','eventy','eventyvalue'})) = [];
             
             h.ParameterList.Items = p;
-%             h.Par =  
+            
+            obj.Par = [];
+            for i = 1:length(p)
+                obj.Par.(p{i}) = tmpObj.(p{i});
+            end
+            
+            obj.select_parameter;
+
         end
     end
     

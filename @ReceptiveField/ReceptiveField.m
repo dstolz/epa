@@ -1,16 +1,22 @@
+
 classdef ReceptiveField < handle
     
-    properties
-        
-    end
        
     properties (SetObservable = true)
-        metric      (1,:) char {mustBeMember(metric,{'sum','mean','median','mode'})} = 'mean';
-        window      (1,2) double {mustBeFinite} = [0 1];
-        plotstyle   (1,:) char {mustBeMember(plotstyle,{'surf','imagesc','contourf','contour'})} = 'contour';
-        colormap = @parula;
+        Cluster     (1,1) %epa.Cluster
+        Events
         
-        smoothdata (1,1) double {mustBeNonnegative,mustBeFinite} = 0;
+        event           % event name
+        eventvalue  (1,:)
+        
+        plotstyle   (1,:) char {mustBeMember(plotstyle,{'surf','imagesc','contourf','contour'})} = 'contour';
+
+        metric      (1,:) char {mustBeMember(metric,{'sum','mean','median','mode'})} = 'mean';
+        window      (1,2) double {mustBeNonempty,mustBeFinite} = [0 1];
+        
+        smoothdata (1,1) double {mustBeNonempty,mustBeNonnegative,mustBeFinite} = 0;
+        
+        colormap = @parula;
     end
     
     
@@ -29,17 +35,22 @@ classdef ReceptiveField < handle
         yEvent
     end
     
-    properties (SetAccess = immutable)
-        Cluster
-        Events
-    end
-    
     methods
-        function obj = ReceptiveField(ClusterObj,EventObj)
-            obj.Cluster = ClusterObj;
+        function obj = ReceptiveField(Cluster,varargin)
+            obj.Cluster = Cluster;
             
-            obj.Events = EventObj;
+            par = epa.helper.parse_parameters(obj,varargin);
             
+            m = metaclass(obj);
+            p = m.PropertyList;
+            ind = [p.Dependent];
+            p(ind) = [];
+            pn = {p.Name};
+            fn = fieldnames(par);
+            pn = intersect(pn,fn);
+            for i = 1:length(pn)
+                obj.(pn{i}) = par.(pn{i});
+            end
         end
         
         
@@ -79,6 +90,8 @@ classdef ReceptiveField < handle
         
         
         function d = get.data(obj)
+            if isempty(obj.Events), return; end
+            
             ons = obj.Events(1).OnOffSamples(:,1);
             ons = ons+obj.windowSamples;
             

@@ -1,7 +1,7 @@
 %% Load saved Session objects
 
-load('TEST_SESSIONS.mat')
-
+% load('TEST_SESSIONS.mat')
+load('TEST_SESSIONS_Subject-227.mat')
 
 %% Example 1a - Using 'Name,Value' paired input
 S(2).Clusters(3).plot_raster('event',"AMdepth");
@@ -76,11 +76,11 @@ for C = [Stuning.Clusters]
     ax = nexttile;
     
     RF = epa.ReceptiveField(C,[xEvent yEvent]);
-    RF.ax           = ax;
-    RF.window       = [0 0.1];
-    RF.metric       = 'mean';
-    RF.plotstyle    = 'surf';
-    RF.smoothdata   = 3;
+    RF.ax         = ax;
+    RF.window     = [0 0.025];
+    RF.metric     = 'mean';
+    RF.plotstyle  = 'surf';
+    RF.smoothdata = 3;
     RF.plot;
     
     ax.XScale = 'log';

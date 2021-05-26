@@ -61,7 +61,7 @@ classdef Event < handle
             
             v = obj.Values;
             oot = obj.OnOffTimes;
-            if nargin == 2 && ~isempty(val) && ~isequal(val,'all')
+            if nargin >= 2 && ~isempty(val) && ~isequal(val,'all')
                 ind = ismembertol(v,val,tol);
                 v(~ind) = [];
                 oot(~ind,:) = [];

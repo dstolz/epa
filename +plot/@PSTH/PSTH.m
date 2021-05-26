@@ -7,11 +7,11 @@ classdef PSTH < handle & dynamicprops
         event           % event name
         eventvalue     (1,:)
         
-        binsize        (1,1) double {mustBePositive,mustBeFinite} = 0.01;
-        window         (1,2) double {mustBeFinite} = [0 1];
-        normalization  (1,:) char {mustBeMember(normalization,{'count','firingrate','countdensity','probability','cumcount','cdf','pdf'})} = 'count';
-        showlegend     (1,1) logical = false;
-        showeventonset (1,1) logical = true;
+        binsize        (1,1) double {mustBeNonempty,mustBePositive,mustBeFinite} = 0.01;
+        window         (1,2) double {mustBeNonempty,mustBeFinite} = [0 1];
+        normalization  (1,:) char {mustBeNonempty,mustBeMember(normalization,{'count','firingrate','countdensity','probability','cumcount','cdf','pdf'})} = 'count';
+        showlegend     (1,1) logical {mustBeNonempty} = false;
+        showeventonset (1,1) logical {mustBeNonempty} = true;
         
         colormap      = [];
         
@@ -24,6 +24,10 @@ classdef PSTH < handle & dynamicprops
         handles
     end
         
+    properties (Constant)
+        DataFormat = '1D';
+    end
+    
     methods
         function obj = PSTH(Cluster,varargin)
             obj.Cluster = Cluster;
@@ -31,13 +35,13 @@ classdef PSTH < handle & dynamicprops
             par = epa.helper.parse_parameters(obj,varargin);
             
             p = properties(obj);
+            p(ismember(p,'DataFormat')) = [];
             fn = fieldnames(par);
             p = intersect(p,fn);
             for i = 1:length(p)
                 obj.(p{i}) = par.(p{i});
             end
             
-            if isempty(obj.ax), obj.ax = gca; end
         end
         
         function set.window(obj,w)
@@ -47,6 +51,7 @@ classdef PSTH < handle & dynamicprops
         
         
         function plot(obj)
+            if isempty(obj.ax), obj.ax = gca; end
             
             axe = obj.ax;
             
@@ -115,7 +120,7 @@ classdef PSTH < handle & dynamicprops
             
             axis(axe,'tight');
             
-            if par.showlegend, legend(par.plot.path); end
+            if par.showlegend, legend([par.handles.plot]); end
             
             epa.helper.setfont(axe);            
         end

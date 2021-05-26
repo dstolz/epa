@@ -11,7 +11,7 @@ classdef Raster < handle & dynamicprops
         showlegend     (1,1) logical = false;
         showeventonset (1,1) logical = true;
         
-        sort           (1,:) char {mustBeMember(sort,{'original','events'})} = 'original';
+        sortevents     (1,:) char {mustBeMember(sortevents,{'original','events'})} = 'original';
         
         colormap      = [];
         
@@ -23,6 +23,10 @@ classdef Raster < handle & dynamicprops
         handles
     end
     
+    properties (Constant)
+        DataFormat = '1D';
+    end
+    
     methods
         function obj = Raster(Cluster,varargin)
             obj.Cluster = Cluster;
@@ -30,22 +34,22 @@ classdef Raster < handle & dynamicprops
             par = epa.helper.parse_parameters(obj,varargin);
             
             p = properties(obj);
+            p(ismember(p,'DataFormat')) = [];
             fn = fieldnames(par);
             p = intersect(p,fn);
             for i = 1:length(p)
                 obj.(p{i}) = par.(p{i});
             end
             
-            if isempty(obj.ax), obj.ax = gca; end
         end
         
         function set.window(obj,w)
-            if numel(w) == 1, w = sort([0 w]); end
+            if numel(w) == 1, w = sortevents([0 w]); end
             obj.window = w(:)';
         end
         
         function plot(obj)
-            
+            if isempty(obj.ax), obj.ax = gca; end
             
             axe = obj.ax;
             
@@ -101,10 +105,10 @@ classdef Raster < handle & dynamicprops
             axe.YAxis.TickDirection = 'out';
             
             if par.showlegend
-                legend(par.plot,'location','EastOutside');
+                legend([par.handles.raster],'location','EastOutside');
             end
             
-            switch lower(par.sort)
+            switch lower(par.sortevents)
                 case 'original'
                     ylabel(axe,'trial');
                 case 'events'
