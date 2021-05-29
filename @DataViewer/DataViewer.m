@@ -95,22 +95,19 @@ classdef DataViewer < handle
             o = obj.handles.SelectSession.CurrentObject;
         end
         
-        function set.Session(obj,S)
-            ph = findobj(obj.handles.NavGrid,'-property','Enable');
-            
-            set(ph,'Enable','off');
-            
-            h = obj.handles.SelectSession;
-            
-            h.Object = S;
+        function set.Session(obj,S)            
             
             if isempty(S), return; end
             
+            obj.Session = S;
+            
+            h = obj.handles.SelectSession;
+            h.Object =S;
+            
+            % add running index to Session
             for i = 1:length(h.handle.Items)
                 h.handle.Items{i} = sprintf('%02d. %s',i,h.handle.Items{i});
             end
-            
-            set(ph,'Enable','on');
         end
         
         
@@ -207,7 +204,8 @@ classdef DataViewer < handle
             
             h = obj.handles;
             
-            if isequal(src,'init')
+            
+            if nargin > 1 && isequal(src,'init')
                 a = evalin('base','whos'); 
                 ind = ismember({a.class},'epa.Session');
                 
@@ -217,7 +215,7 @@ classdef DataViewer < handle
                 
                 an = string({a(ind).name});
                 b = cellfun(@(x) evalin('base',x),an,'uni',0);
-                % add index values to Session array; there must be a
+                % add variable name and index values to Session array; there must be a
                 % simpler way to do this...
                 ann = string([]);
                 for i = 1:length(b)
@@ -227,13 +225,28 @@ classdef DataViewer < handle
                 end
                 h.SelectSession.Object = [b{:}];
                 h.SelectSession.handle.Items = ann;
+                
+                % add running index to Session
+                for i = 1:length(h.SelectSession.handle.Items)
+                    h.SelectSession.handle.Items{i} = sprintf('%02d. %s',i,h.SelectSession.handle.Items{i});
+                end
             end
+            
             
             S = h.SelectSession.CurrentObject;
             
             if isempty(S)
+                h.SelectClusters.handle.Items = {};
+                h.SelectClusters.handle.Enable = 'off';
+                h.SelectEvent1.handle.Items = {};
                 h.SelectEvent1.handle.Enable ='off';
+                h.SelectEvent2.handle.Items = {};
                 h.SelectEvent2.handle.Enable ='off';
+                h.SelectEvent1Values.Items = {};
+                h.SelectEvent1Values.Enable = 'off';
+                h.SelectEvent2Values.Items = {};
+                h.SelectEvent2Values.Enable = 'off';
+                h.PlotButton.Enable = 'off';
                 return
             end
                         
