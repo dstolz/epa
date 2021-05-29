@@ -3,14 +3,18 @@ classdef DataViewer < handle
     properties (SetObservable = true)
         Session
         Par
+        DataPath    (1,:) char = cd;
     end
     
     
-    properties (Access = protected)
+    properties (Access = public) % make protected
         handles
         plotMeta
     end
     
+    properties (SetAccess = private)
+        parent
+    end
     
     properties (Dependent)
         curEvent1
@@ -20,22 +24,29 @@ classdef DataViewer < handle
         curPlotStyle
     end
     
+    
     methods
         create_nav(obj);
         plot(obj,src,event);
         
-        function obj = DataViewer()
+        function obj = DataViewer(parent)
+            if nargin >= 1, obj.parent = parent; end
+            
             obj.create_nav;
+            
+            if nargout == 0, clear obj; end
         end
         
         function delete(obj)
-            if isvalid(obj.handles.Figure), delete(obj.handles.Figure); end
+            if isvalid(obj.parent), delete(obj.parent); end
         end
         
         
         function delete_fig(obj,src,event)
-            setpref('epa_DataViewer','FigurePosition',obj.handles.Figure.Position);
-            delete(obj.handles.Figure);
+            if isa(obj.parent,'matlab.ui.Figure')
+                setpref('epa_DataViewer','FigurePosition',obj.parent.Position);
+            end
+            delete(obj.parent);
         end
         
         
@@ -72,7 +83,44 @@ classdef DataViewer < handle
         end
         
         
-        
+        function change_data_path(obj,src,event)
+            pth = getpref('epa_DataViewer','DataPath',cd);
+            
+            pth = uigetdir(pth,'Data Path');
+            
+            if isequal(pth,0), return; end
+            
+            
+            obj.DataPath = pth;
+            
+            d = dir(fullfile(pth,'*.mat'));
+            
+            nm = {d.name};
+            
+            % look for epa.Session objects within files within the selected
+            % directory
+            S = [];
+            for i = 1:length(nm)
+                r = load(fullfile(pth,nm{i}));
+                nmf = fieldnames(r);
+                t = cellfun(@(a) isa(r.(a),'epa.Session'),nmf,'uni',0);
+                for j = 1:length(nmf)
+                    nmf{j}(~t{j}) = [];
+                    if isempty(nmf{j}), continue; end
+                    if isempty(S)
+                        S = r.(nmf{j})(:);
+                    else
+                        S = [S(:); r.(nmf{j})(:)];
+                    end
+                end
+            end
+            
+            
+            h = obj.handles.SelectSession;
+            h.Object = S;
+            
+            setpref('epa_DataViewer','DataPath',pth);
+        end
         
         
         
@@ -141,7 +189,7 @@ classdef DataViewer < handle
             
             if isempty(C)
                 h.SelectClusters.handle.Enable = 'off';
-                uialert(h.Figure,'No Clusters were found to be in common across the selected Sessions.', ...
+                uialert(obj.parent,'No Clusters were found to be in common across the selected Sessions.', ...
                     'No Clusters','Icon','warning','Modal',true);
                 return
             end
@@ -151,7 +199,7 @@ classdef DataViewer < handle
                 h.SelectEvent2.handle.Enable   = 'off';
                 h.SelectEvent1Values.Enable    = 'off';
                 h.SelectEvent2Values.Enable    = 'off';
-                uialert(h.Figure,'No Events were found to be in common across the selected Sessions.', ...
+                uialert(obj.parent,'No Events were found to be in common across the selected Sessions.', ...
                     'No Events','Icon','warning','Modal',true);
                 return
             end

@@ -1,25 +1,46 @@
 function create_nav(obj)
 
-% figure
-fpos = getpref('epa_DataViewer','FigurePosition',[400 250 500 300]);
-f = uifigure('Position',fpos);
-f.DeleteFcn = @obj.delete_fig;
-f.WindowKeyPressFcn = @obj.process_keys;
-movegui(f,'onscreen');
-obj.handles.Figure = f;
-
+if isempty(obj.parent)
+    % figure
+    fpos = getpref('epa_DataViewer','FigurePosition',[400 250 500 400]);
+    f = uifigure('Position',fpos);
+    f.DeleteFcn = @obj.delete_fig;
+    f.WindowKeyPressFcn = @obj.process_keys;
+    movegui(f,'onscreen');
+    obj.parent = f;
+end
 
 
 % main grid layout
-g = uigridlayout(f);
-g.ColumnWidth = {100,100,100,'1x'};
-g.RowHeight   = {75,25,125};
-obj.handles.NavGrid = g;
+NavGrid = uigridlayout(obj.parent);
+NavGrid.ColumnWidth = {100,100,100,'1x'};
+NavGrid.RowHeight   = {25,'1x',25,'1x'};
+obj.handles.NavGrid = NavGrid;
+
+
+% toolbar
+TbarGrid = uigridlayout(NavGrid);
+TbarGrid.Layout.Column = [1 4];
+TbarGrid.Layout.Row    = 1;
+TbarGrid.ColumnWidth   = repmat({25},1,5);
+TbarGrid.RowHeight     = {'1x'};
+TbarGrid.Padding       = [5 0 5 0];
+obj.handles.ToolbarGrid = TbarGrid;
+
+h = uibutton(TbarGrid);
+h.Icon = fullfile(matlabroot,'toolbox','matlab','icons','foldericon.gif');
+h.Tooltip = 'Change data path';
+h.Text = '';
+h.ButtonPushedFcn = @obj.change_data_path;
+obj.handles.LoadSessionButton = h;
+
+
+
 
 % Session listbox
-h = epa.ui.SelectObject(g,'epa.Session','uilistbox');
+h = epa.ui.SelectObject(NavGrid,'epa.Session','uilistbox');
 h.handle.Layout.Column = [1 3];
-h.handle.Layout.Row = 1;
+h.handle.Layout.Row = 2;
 h.handle.Tag = 'SelectSession';
 h.handle.Multiselect = 'on';
 h.handle.Enable = 'off';
@@ -30,14 +51,14 @@ obj.handles.SelectSession = h;
 
 
 % Clusters
-h = uilabel(g);
+h = uilabel(NavGrid);
 h.Layout.Column = 1;
-h.Layout.Row = 2;
+h.Layout.Row = 3;
 h.Text = 'Clusters';
 
-h = epa.ui.SelectObject(g,'epa.Cluster','uilistbox');
+h = epa.ui.SelectObject(NavGrid,'epa.Cluster','uilistbox');
 h.handle.Layout.Column = 1;
-h.handle.Layout.Row = 3;
+h.handle.Layout.Row = 4;
 h.handle.Enable = 'off';
 h.handle.Tag = 'SelectClusters';
 h.handle.Multiselect = 'on';
@@ -48,33 +69,33 @@ obj.handles.SelectClusters = h;
 
 
 % Events
-h = epa.ui.SelectObject(g,'epa.Event','uidropdown');
+h = epa.ui.SelectObject(NavGrid,'epa.Event','uidropdown');
 h.handle.Layout.Column = 2;
-h.handle.Layout.Row = 2;
+h.handle.Layout.Row = 3;
 h.handle.Enable = 'off';
 h.handle.Tag = 'SelectEvent1';
 h.handle.Tooltip = 'Select Event 1';
 obj.handles.SelectEvent1 = h;
 
-h = epa.ui.SelectObject(g,'epa.Event','uidropdown');
+h = epa.ui.SelectObject(NavGrid,'epa.Event','uidropdown');
 h.handle.Layout.Column = 3;
-h.handle.Layout.Row = 2;
+h.handle.Layout.Row = 3;
 h.handle.Enable = 'off';
 h.handle.Tag = 'SelectEvent2';
 h.handle.Tooltip = 'Select Event 2';
 obj.handles.SelectEvent2 = h;
 
-h = uilistbox(g);
+h = uilistbox(NavGrid);
 h.Layout.Column = 2;
-h.Layout.Row = 3;
+h.Layout.Row = 4;
 h.Enable = 'off';
 h.Tag = 'SelectEvent1Values';
 h.Multiselect = 'on';
 obj.handles.SelectEvent1Values = h;
 
-h = uilistbox(g);
+h = uilistbox(NavGrid);
 h.Layout.Column = 3;
-h.Layout.Row = 3;
+h.Layout.Row = 4;
 h.Enable = 'off';
 h.Tag = 'SelectEvent2Values';
 h.Multiselect = 'on';
@@ -85,12 +106,12 @@ obj.handles.SelectEvent2Values = h;
 
 
 % Plot
-PlotGrid = uigridlayout(g);
+PlotGrid = uigridlayout(NavGrid);
 PlotGrid.ColumnWidth = {'1x','1x'};
 PlotGrid.RowHeight = {25,'1x',25};
 PlotGrid.Padding = [0 0 0 0];
 PlotGrid.Layout.Column = 4;
-PlotGrid.Layout.Row = [1 length(g.RowHeight)];
+PlotGrid.Layout.Row = [2 length(NavGrid.RowHeight)];
 obj.handles.PlotGrid = PlotGrid;
 
 h = uidropdown(PlotGrid,'CreateFcn',@obj.create_plotdropdown);
@@ -121,7 +142,7 @@ obj.handles.ParameterEdit = h;
 h = obj.handles;
 
 % Set fonts
-epa.helper.setfont(h.Figure,12);
+epa.helper.setfont(obj.parent,12);
 
 
 
