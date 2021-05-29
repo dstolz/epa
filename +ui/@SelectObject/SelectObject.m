@@ -61,6 +61,16 @@ classdef SelectObject < handle
         function set.CurrentObject(obj,cobj)
             obj.handle.Value = cobj;
         end
+        
+        function set.Object(obj,newObj)
+            assert(all(isa(newObj,obj.ObjectClass)), ...
+                'epa:ui:SelectObject:set_Object:InvalidClass', ...
+                'This Object must be of class type "%s"',obj.ObjectClass);
+            
+            obj.Object = newObj;
+            
+            obj.refresh;
+        end
     end
     
     

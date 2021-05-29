@@ -20,11 +20,13 @@ switch tmpObj.DataFormat
     case '1D'
         par.event = E1.Name;
         par.eventvalue = obj.handles.SelectEvent1Values.Value;
+        
     case '2D'
         par.eventX = E1.Name;
         par.eventXvalue = obj.handles.SelectEvent1Values.Value;
         par.eventY = E2.Name;
         par.eventYvalue = obj.handles.SelectEvent2Values.Value;
+        
     otherwise
         error('Unrecognized plot DataFormat, ''%s''',tmpObj.DataFormat)
 end
@@ -32,14 +34,13 @@ end
 
 par.parent = f;
 
-m = length(S);
-n = length(C);
+m = length(C);
+n = length(S);
 
 t = tiledlayout(m,n);
 
 for s = 1:length(S)
     for c = 1:length(C)
-        
         ax = nexttile(t);
         par.ax = ax;
         

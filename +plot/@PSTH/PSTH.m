@@ -55,9 +55,8 @@ classdef PSTH < handle & dynamicprops
             
             axe = obj.ax;
             
-            S = obj.Cluster.Session;
             C = obj.Cluster;
-            
+            S = C.Session;
             
             cla(axe,'reset');
             

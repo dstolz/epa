@@ -102,6 +102,8 @@ classdef Session < handle
         
         
         function e = find_Event(obj,name)
+            e = [];
+            if isempty(name), return ;end
             name = string(name);
             e = obj.Events(strcmpi([obj.Events.Name],name));
         end

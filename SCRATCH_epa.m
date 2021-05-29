@@ -1,8 +1,8 @@
 %% EPA
 
 % Specify the root directory to a data set
-% DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-228\210227_concat_organized\';
-DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-226\210424_concat_organized';
+DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-228\210227_concat_organized\';
+% DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-226\210424_concat_organized';
 
 % load config file contains acquisition parameters
 load(fullfile(DataPath,'config.mat'))
@@ -137,7 +137,7 @@ disp([S.Name]')
 %% Save one or more Session objects to load later
 
 
-save('TEST_SESSIONS_Subject-226.mat','S')
+save('TEST_SESSIONS_Subject-228.mat','S')
 
 
 

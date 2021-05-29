@@ -27,7 +27,14 @@ TbarGrid.RowHeight     = {'1x'};
 TbarGrid.Padding       = [5 0 5 0];
 obj.handles.ToolbarGrid = TbarGrid;
 
+
 iconPath = fullfile(matlabroot,'toolbox','matlab','icons');
+
+h = uibutton(TbarGrid);
+h.Tooltip = 'Session objects from workspace';
+h.Text = 'Workspace';
+h.ButtonPushedFcn = @(~,~) obj.select_session_updated('init');
+obj.handles.ChangeDataPathToolbar = h;
 
 h = uibutton(TbarGrid);
 h.Icon = fullfile(iconPath,'file_open.png');
@@ -124,36 +131,28 @@ obj.handles.SelectEvent2Values = h;
 
 % Plot
 PlotGrid = uigridlayout(NavGrid);
-PlotGrid.ColumnWidth = {'1x','1x'};
-PlotGrid.RowHeight = {25,'1x',25};
+PlotGrid.ColumnWidth = {'1x'};
+PlotGrid.RowHeight = {25,'1x',25,25};
 PlotGrid.Padding = [0 0 0 0];
 PlotGrid.Layout.Column = 5;
 PlotGrid.Layout.Row = [2 length(NavGrid.RowHeight)];
 obj.handles.PlotGrid = PlotGrid;
 
 h = uidropdown(PlotGrid,'CreateFcn',@obj.create_plotdropdown);
-h.Layout.Row = 1;
-h.Layout.Column = 1;
 h.ValueChangedFcn = @obj.plot_style_value_changed;
 obj.handles.SelectPlotStyle = h;
 
-h = uibutton(PlotGrid);
-h.Layout.Row = 1;
-h.Layout.Column = 2;
-h.Text = 'Plot';
-h.ButtonPushedFcn = @obj.plot;
-
 h = uilistbox(PlotGrid);
-h.Layout.Row = 2;
-h.Layout.Column = [1 2];
 h.ValueChangedFcn = @obj.select_parameter;
 obj.handles.ParameterList = h;
 
 h = uieditfield(PlotGrid);
-h.Layout.Row = 3;
-h.Layout.Column = [1 2];
 h.ValueChangedFcn = @obj.parameter_edit;
 obj.handles.ParameterEdit = h;
+
+h = uibutton(PlotGrid);
+h.Text = 'Plot';
+h.ButtonPushedFcn = @obj.plot;
 
 
 h = obj.handles;

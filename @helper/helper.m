@@ -7,6 +7,11 @@ classdef helper < handle
         end
         
         function par = parse_parameters(par,varargin)
+            
+            if startsWith(class(par),'epa.plot')
+                par = epa.helper.obj2par(par);
+            end
+            
             if length(varargin) == 1
                 if iscell(varargin) && numel(varargin{1}) == 1
                     varargin = varargin{1};
@@ -77,5 +82,7 @@ classdef helper < handle
         function rd = rootdir
             rd = fileparts(fileparts(fileparts(which('epa.helper'))));
         end
+        
+        
     end
 end

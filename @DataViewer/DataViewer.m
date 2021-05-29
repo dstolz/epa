@@ -67,7 +67,7 @@ classdef DataViewer < handle
         
         function o = get.curEvent2(obj)
             o = [];
-            if length(obj.curSession.Events) > 1
+            if length(obj.curSession(1).Events) > 1
                 o = obj.handles.SelectEvent2.CurrentObject;
             end
         end
@@ -82,11 +82,21 @@ classdef DataViewer < handle
         end
         
         function set.Session(obj,S)
+            ph = findobj(obj.handles.NavGrid,'-property','Enable');
+            
+            set(ph,'Enable','off');
+            
             h = obj.handles.SelectSession;
+            
             h.Object = S;
+            
+            if isempty(S), return; end
+            
             for i = 1:length(h.handle.Items)
                 h.handle.Items{i} = sprintf('%02d. %s',i,h.handle.Items{i});
             end
+            
+            set(ph,'Enable','on');
         end
         
         
@@ -290,6 +300,8 @@ classdef DataViewer < handle
             p = h.ParameterList.Value;
             
             nv = event.Value;
+            
+            if ~isvalid(obj.plotMeta), return; end
             
             mp = obj.plotMeta.PropertyList;
             
