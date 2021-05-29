@@ -184,7 +184,7 @@ classdef DataViewer < handle
             plottypes = epa.helper.plot_types;
             src.Items     = plottypes;
             src.ItemsData = plottypes;
-            src.Value     = 'PSTH';
+            src.Value     = 'PSTH_Raster';
         end
         
         
