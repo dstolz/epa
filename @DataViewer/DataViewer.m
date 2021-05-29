@@ -3,7 +3,11 @@ classdef DataViewer < handle
     properties (SetObservable = true)
         Session
         Par
-        DataPath    (1,:) char = cd;
+    end
+    
+    properties
+        Filename    (:,1) string
+        DataPath    (:,1) string
     end
     
     
@@ -78,30 +82,66 @@ classdef DataViewer < handle
         end
         
         function set.Session(obj,S)
-            obj.handles.SelectSession.Object = S;
-            obj.select_session_updated('init');
+            h = obj.handles.SelectSession;
+            h.Object = S;
+            for i = 1:length(h.handle.Items)
+                h.handle.Items{i} = sprintf('%02d. %s',i,h.handle.Items{i});
+            end
         end
         
         
         function change_data_path(obj,src,event)
-            pth = getpref('epa_DataViewer','DataPath',cd);
+            pth = getpref('epa_DataViewer','DataPath',string(cd));
             
             pth = uigetdir(pth,'Data Path');
             
             if isequal(pth,0), return; end
             
-            
-            obj.DataPath = pth;
+            obj.DataPath = string(pth);
             
             d = dir(fullfile(pth,'*.mat'));
+                        
+            fn = arrayfun(@(a) fullfile(a.folder,a.name),d,'uni',0);
             
-            nm = {d.name};
+            obj.Filename = string(fn);
+            
+            setpref('epa_DataViewer','DataPath',pth);
+        end
+        
+        
+        
+        function file_open(obj,src,event)
+            
+            pth = getpref('epa_DataViewer','DataPath',string(cd));
+            
+            [fn,pth] = uigetfile( ...
+                {'*.mat','MAT-file (*.mat)'; ...
+                '*.epas','Session Object (*.mat)'}, ...
+                'Pick a file',pth,'MultiSelect','on');
+            
+            if isequal(fn,0), return; end
+                        
+            fn = cellfun(@(a) fullfile(pth,a),cellstr(fn),'uni',0);
+            obj.Filename = string(fn);
+            
+            setpref('epa_DataViewer','DataPath',pth);
+
+        end
+        
+        
+        function set.Filename(obj,fn)
+            fn = string(fn);
+            
             
             % look for epa.Session objects within files within the selected
             % directory
+            
             S = [];
-            for i = 1:length(nm)
-                r = load(fullfile(pth,nm{i}));
+            for i = 1:length(fn)
+                assert(isfile(fn(i)),'epa:DataViewer:set_Filename:FileNotFound', ...
+                    'The file "%s" was not found.',fn(i));
+                
+                r = load(fn(i),'-mat');
                 nmf = fieldnames(r);
                 t = cellfun(@(a) isa(r.(a),'epa.Session'),nmf,'uni',0);
                 for j = 1:length(nmf)
@@ -114,22 +154,20 @@ classdef DataViewer < handle
                     end
                 end
             end
+            obj.Session = S;
+            obj.Filename = fn;
             
-            
-            h = obj.handles.SelectSession;
-            h.Object = S;
-            
-            setpref('epa_DataViewer','DataPath',pth);
+            figure(ancestor(obj.parent,'figure'));
         end
         
         
         
-        
-        
-        
-        
-        
-    end
+    end % methods (Access = public)
+    
+    
+    
+    
+    
     
     methods (Access = private)
         function create_plotdropdown(obj,src,event)
