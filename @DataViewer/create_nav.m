@@ -11,18 +11,23 @@ if isempty(obj.parent)
 end
 
 
+
+
 % main grid layout
 NavGrid = uigridlayout(obj.parent);
-NavGrid.ColumnWidth = {'0.4x','0.15x','0.15x','0.15x','0.15x'};
+NavGrid.ColumnWidth = {'0.4x','0.13x','0.13x','0.13x','0.2x'};
 NavGrid.RowHeight   = {25,25,'1x'};
 obj.handles.NavGrid = NavGrid;
+
+
+
 
 
 % toolbar
 TbarGrid = uigridlayout(NavGrid);
 TbarGrid.Layout.Column = [1 5];
 TbarGrid.Layout.Row    = 1;
-TbarGrid.ColumnWidth   = repmat({80},1,5);
+TbarGrid.ColumnWidth   = repmat({120},1,5);
 TbarGrid.RowHeight     = {'1x'};
 TbarGrid.Padding       = [5 0 5 0];
 obj.handles.ToolbarGrid = TbarGrid;
@@ -30,25 +35,13 @@ obj.handles.ToolbarGrid = TbarGrid;
 
 iconPath = fullfile(matlabroot,'toolbox','matlab','icons');
 
-h = uibutton(TbarGrid);
-h.Tooltip = 'Session objects from workspace';
-h.Text = 'Workspace';
-h.ButtonPushedFcn = @(~,~) obj.select_session_updated('init');
-obj.handles.ChangeDataPathToolbar = h;
 
 h = uibutton(TbarGrid);
 h.Icon = fullfile(iconPath,'file_open.png');
-h.Tooltip = 'Load Session(s) from a file or files';
-h.Text = 'Files';
+h.Tooltip = 'Load Session(s) from one or multiple files';
+h.Text = 'Load Session';
 h.ButtonPushedFcn = @obj.file_open;
 obj.handles.LoadSessionToolbar = h;
-
-h = uibutton(TbarGrid);
-h.Icon = fullfile(iconPath,'foldericon.gif');
-h.Tooltip = 'Change data path';
-h.Text = 'Folder';
-h.ButtonPushedFcn = @obj.change_data_path;
-obj.handles.ChangeDataPathToolbar = h;
 
 
 
@@ -132,7 +125,7 @@ obj.handles.SelectEvent2Values = h;
 % Plot
 PlotGrid = uigridlayout(NavGrid);
 PlotGrid.ColumnWidth = {'1x'};
-PlotGrid.RowHeight = {25,'1x',25,25};
+PlotGrid.RowHeight = {25,'1x',25,50};
 PlotGrid.Padding = [0 0 0 0];
 PlotGrid.Layout.Column = 5;
 PlotGrid.Layout.Row = [2 length(NavGrid.RowHeight)];
@@ -153,6 +146,9 @@ obj.handles.ParameterEdit = h;
 h = uibutton(PlotGrid);
 h.Text = 'Plot';
 h.ButtonPushedFcn = @obj.plot;
+obj.handles.PlotButton = h;
+
+
 
 
 h = obj.handles;

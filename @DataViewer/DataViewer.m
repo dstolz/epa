@@ -33,10 +33,24 @@ classdef DataViewer < handle
         create_nav(obj);
         plot(obj,src,event);
         
-        function obj = DataViewer(parent)
-            if nargin >= 1, obj.parent = parent; end
+        function obj = DataViewer(varargin)
+            
+
+            if length(varargin) > 1
+                par = epa.helper.parse_parameters(obj,varargin);
+                
+                fn = fieldnames(par);
+                for i = 1:length(fn)
+                    obj.(fn{i}) = par.(fn{i});
+                end
+            end
+            
             
             obj.create_nav;
+            
+            if isa(varargin{1},'epa.Session')
+                obj.Session = varargin{1};
+            end
             
             if nargout == 0, clear obj; end
         end
@@ -237,10 +251,12 @@ classdef DataViewer < handle
             
             if isempty(C)
                 h.SelectClusters.handle.Enable = 'off';
+                h.PlotButton.Enable = 'off';
                 uialert(obj.parent,'No Clusters were found to be in common across the selected Sessions.', ...
                     'No Clusters','Icon','warning','Modal',true);
                 return
             end
+            h.PlotButton.Enable = 'on';
             
             if isempty(E)
                 h.SelectEvent1.handle.Enable   = 'off';
@@ -279,7 +295,12 @@ classdef DataViewer < handle
         end
         
         function select_cluster_updated(obj,src,event)
-            
+            c = obj.curClusters;
+            if isempty(c)
+                obj.handles.PlotButton.Enable = 'off';
+            else
+                obj.handles.PlotButton.Enable = 'on';
+            end
         end
         
         function process_keys(obj,src,event)

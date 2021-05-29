@@ -111,24 +111,32 @@ classdef RFMap < handle & dynamicprops
             
             if obj.smoothdata > 0
                 [m,n] = size(data);
-                x = 1:n;
-                xi = linspace(1,n,n*obj.smoothdata);
-                xi = interp1(x,uvx,xi,'makima');
-                y = 1:m;
-                yi = linspace(1,m,m*obj.smoothdata);
-                yi = interp1(y,uvy,yi,'makima');
+                
+                x = uvx;
+                if max(diff(x)) == min(diff(x))
+                    xi = linspace(x(1),x(end),n*obj.smoothdata);
+                else
+                    xi = logspace(log10(x(1)),log10(x(end)),n*obj.smoothdata);
+                end
+                
+                y = uvy;
+                if max(diff(y)) == min(diff(y))
+                    yi = linspace(y(1),y(end),m*obj.smoothdata);
+                else
+                    yi = logspace(log10(y(1)),log10(y(end)),m*obj.smoothdata);
+                end
                
-                [y,x]   = meshgrid(x,y);
-                [yi,xi] = meshgrid(xi,yi);
-                data = interp2(y,x,data,yi,xi,'makima');
+                [x,y]   = meshgrid(x,y);
+                [xi,yi] = meshgrid(xi,yi);
+                data = interp2(x,y,data,xi,yi,'makima');
             end
             
             
             obj.handles.rf = imagesc(axe,uvx,uvy,data);
+            set(axe,'ydir','normal');
             
             cm = epa.helper.colormap(par.colormap,128);
             colormap(axe,cm); %#ok<CPROP>
-            
             
             
             xlabel(axe,Ex.Name);
