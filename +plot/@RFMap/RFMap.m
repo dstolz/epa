@@ -1,6 +1,7 @@
-classdef RFMap < handle & dynamicprops
+classdef RFMap < epa.plot.PlotType
     
-    properties (SetObservable = true)
+    
+    properties (SetObservable, AbortSet)
         Cluster        (1,1) %epa.Cluster
         
         eventx          % event name
@@ -15,9 +16,6 @@ classdef RFMap < handle & dynamicprops
         smoothdata     (1,1) double {mustBeNonnegative,mustBeFinite} = 3;
         
         colormap      = 'jet';
-        
-        parent
-        ax
     end
     
     properties (SetAccess = private)
@@ -30,11 +28,9 @@ classdef RFMap < handle & dynamicprops
     
     methods
         function obj = RFMap(Cluster,varargin)
+            obj = obj@epa.plot.PlotType(varargin{:});
+            
             obj.Cluster = Cluster;
-            
-            par = epa.helper.parse_parameters(obj,varargin);
-            
-            epa.helper.par2obj(obj,par);
         end
         
         function set.window(obj,w)
@@ -42,10 +38,14 @@ classdef RFMap < handle & dynamicprops
             obj.window = w(:)';
         end
         
-        function plot(obj)
-            if isempty(obj.ax), obj.ax = gca; end
+        function plot(obj,src,event)
+            if nargin > 1 && isempty(obj.handles), return; end % not yet instantiated by calling obj.plot
+
+            
+            obj.setup_plot;
             
             axe = obj.ax;
+            cla(axe,'reset');
             
             S = obj.Cluster.Session;
             C = obj.Cluster;
@@ -129,7 +129,7 @@ classdef RFMap < handle & dynamicprops
             set(axe,'ydir','normal');
             
             cm = epa.helper.colormap(par.colormap,128);
-            colormap(axe,cm); %#ok<CPROP>
+            colormap(axe,cm); %#ok<CPROPLC>
             
             
             xlabel(axe,Ex.Name);

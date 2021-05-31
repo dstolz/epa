@@ -60,6 +60,14 @@ classdef helper < handle
             end
         end
         
+        function els = listen_for_props(obj,callbackFcn)
+            m = metaclass(obj);
+            p = m.PropertyList;
+            p(~[p.SetObservable]) = [];
+            p = {p.Name};
+            els = addlistener(obj,p,'PostSet',callbackFcn);
+        end
+        
         function cm = colormap(cm,n)
             
             if isempty(cm)

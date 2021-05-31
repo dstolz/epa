@@ -1,7 +1,7 @@
-classdef PSTH_Raster < handle & dynamicprops
+classdef PSTH_Raster < epa.plot.PlotType
     
     
-    properties (SetObservable = true)
+    properties (SetObservable, AbortSet)
         Cluster        (1,1) %epa.Cluster
         
         event           % event name
@@ -16,15 +16,13 @@ classdef PSTH_Raster < handle & dynamicprops
         colormap      = [];
         
         sortevents     (1,:) char {mustBeMember(sortevents,{'original','events'})} = 'original';
-
-        parent
-        ax
     end
     
+    
     properties (SetAccess = private)
-        handles
         PSTH
         Raster
+        parentax
     end
         
     properties (Constant)
@@ -33,13 +31,9 @@ classdef PSTH_Raster < handle & dynamicprops
     
     methods
         function obj = PSTH_Raster(Cluster,varargin)
+            obj = obj@epa.plot.PlotType(varargin{:});
+            
             obj.Cluster = Cluster;
-            
-            par = epa.helper.parse_parameters(obj,varargin);
-            
-            epa.helper.par2obj(obj,par);
-%             
-%             epa.
         end
         
         function set.window(obj,w)
@@ -48,8 +42,16 @@ classdef PSTH_Raster < handle & dynamicprops
         end
         
         
-        function plot(obj)
-            if isempty(obj.ax), obj.ax = gca; end
+        function plot(obj,src,event)
+            if nargin > 1 && isempty(obj.handles), return; end % not yet instantiated by calling obj.plot
+            
+            % TODO: FIX PROPERTY UPDATE
+            %obj.setup_plot;
+            if isempty(obj.ax) % || ~ishandle(obj.ax) || ~isvalid(obj.ax)
+                obj.ax = gca; 
+            end
+            
+            cla(obj.ax,'reset');
             
             par = epa.helper.obj2par(obj);
             par = rmfield(par,{'Cluster','DataFormat'});
@@ -65,36 +67,54 @@ classdef PSTH_Raster < handle & dynamicprops
                 t.Layout.Tile = obj.ax.Layout.Tile;
                 t.Layout.TileSpan = obj.ax.Layout.TileSpan;
             end
-                        
-            axR = nexttile(t);
-            axR.Layout.Tile = 1;
-            axR.Layout.TileSpan = [3 1];
+                  
+            R = obj.Raster;
+            P = obj.PSTH;
+            
+            if isempty(R) || isempty(R.ax) || ~ishandle(R.ax) || ~isvalid(R.ax)
+                axR = nexttile(t);
+                axR.Layout.Tile = 1;
+                axR.Layout.TileSpan = [3 1];
+            else
+                axR = R.ax;
+            end
             par.ax = axR;
             parv = struct2cell(par);
             parv = [fn parv]';
-            obj.Raster = epa.plot.Raster(obj.Cluster,parv{:});
-            obj.Raster.plot;
+            R = epa.plot.Raster(obj.Cluster,parv{:});
+            R.plot;
             axR.Color = 'none';
             axR.XAxis.Color = 'none';
             axR.XAxis.Label.String = 'none';
             axR.YAxis.Color = 'none';
             axR.YAxis.Label.String = 'none';
             
-            axP = nexttile(t);
-            axP.Layout.Tile = 3;
-            axP.Layout.TileSpan = [7 1];
+            
+            if isempty(P) || isempty(P.ax) || ~ishandle(P.ax) || ~isvalid(P.ax)
+                axP = nexttile(t);
+                axP.Layout.Tile = 3;
+                axP.Layout.TileSpan = [7 1];
+            else
+                axP = P.ax;
+            end
             par.ax = axP;
             parv = struct2cell(par);
             parv = [fn parv]';
-            obj.PSTH = epa.plot.PSTH(obj.Cluster,parv{:});
-            obj.PSTH.plot;
+            P = epa.plot.PSTH(obj.Cluster,parv{:});
+            P.plot;
             axP.Color = 'none';
             axP.Title.String = '';
             
             t.Toolbar = axtoolbar;
             
+            epa.helper.setfont(obj.ax);
+            
             linkaxes([axR axP],'x');
             
+            obj.handles.Raster = R.handles;
+            obj.handles.PSTH   = P.handles;
+            
+            if nargout == 0, clear obj; end
         end
         
     end

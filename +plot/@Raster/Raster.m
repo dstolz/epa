@@ -1,6 +1,7 @@
-classdef Raster < handle & dynamicprops
+classdef Raster < epa.plot.PlotType
     
-    properties (SetObservable = true)
+    
+    properties (SetObservable, AbortSet)
         Cluster        (1,1) %epa.Cluster
         
         event           % event name
@@ -14,14 +15,8 @@ classdef Raster < handle & dynamicprops
         sortevents     (1,:) char {mustBeMember(sortevents,{'original','events'})} = 'original';
         
         colormap      = [];
-        
-        parent
-        ax
     end
     
-    properties (SetAccess = private)
-        handles
-    end
     
     properties (Constant)
         DataFormat = '1D';
@@ -29,12 +24,9 @@ classdef Raster < handle & dynamicprops
     
     methods
         function obj = Raster(Cluster,varargin)
+            obj = obj@epa.plot.PlotType(varargin{:});
+            
             obj.Cluster = Cluster;
-            
-            par = epa.helper.parse_parameters(obj,varargin);
-            
-            epa.helper.par2obj(obj,par);
-            
         end
         
         function set.window(obj,w)
@@ -42,22 +34,23 @@ classdef Raster < handle & dynamicprops
             obj.window = w(:)';
         end
         
-        function plot(obj)
-            if isempty(obj.ax), obj.ax = gca; end
+        function plot(obj,src,event)
+            % not yet instantiated by calling obj.plot
+            if nargin > 1 && isempty(obj.handles), return; end 
+            
+            obj.setup_plot;
             
             axe = obj.ax;
+            cla(axe,'reset');
+
             
             S = obj.Cluster.Session;
             C = obj.Cluster;
             
-            
-            cla(axe,'reset');
-            
-                        
+
             if ~isa(obj.event,'epa.Event')
                 obj.event = S.find_Event(obj.event);
             end
-            
             E = obj.event;
 
             par = epa.helper.obj2par(obj);
@@ -122,6 +115,9 @@ classdef Raster < handle & dynamicprops
             drawnow
             set([obj.handles.raster.MarkerHandle],'Style','vbar');
             
-        end
-    end
+            if nargout == 0, clear obj; end
+        end 
+    end % methods (Access = public)
+  
+    
 end

@@ -1,7 +1,7 @@
-classdef PSTH < handle & dynamicprops
+classdef PSTH < epa.plot.PlotType
     
     
-    properties (SetObservable = true)
+    properties (SetObservable, AbortSet)
         Cluster        (1,1) %epa.Cluster
         
         event           % event name
@@ -15,27 +15,18 @@ classdef PSTH < handle & dynamicprops
         
         colormap      = [];
         
-        
-        parent
-        ax
     end
     
-    properties (SetAccess = private)
-        handles
-    end
-        
+    
     properties (Constant)
         DataFormat = '1D';
     end
     
     methods
         function obj = PSTH(Cluster,varargin)
+            obj = obj@epa.plot.PlotType(varargin{:});
+            
             obj.Cluster = Cluster;
-            
-            par = epa.helper.parse_parameters(obj,varargin);
-            
-            epa.helper.par2obj(obj,par);
-            
         end
         
         function set.window(obj,w)
@@ -44,23 +35,26 @@ classdef PSTH < handle & dynamicprops
         end
         
         
-        function plot(obj)
-            if isempty(obj.ax), obj.ax = gca; end
+        function plot(obj,src,event)
+            if nargin > 1 && isempty(obj.handles), return; end % not yet instantiated by calling obj.plot
+
+            obj.setup_plot;
             
             axe = obj.ax;
+            cla(axe,'reset');
             
             C = obj.Cluster;
             S = C.Session;
             
             cla(axe,'reset');
             
-                        
+            
             if ~isa(obj.event,'epa.Event')
                 obj.event = S.find_Event(obj.event);
             end
             
             E = obj.event;
-
+            
             par = epa.helper.obj2par(obj);
             
             [c,b,uv] = C.psth(par);
@@ -73,11 +67,11 @@ classdef PSTH < handle & dynamicprops
             hold(axe,'on')
             
             if par.showeventonset
-                par.handles.eventonset = line(axe,[0 0],[0 max(c(:))*1.1],'color',[0.6 0.6 0.6],'linewidth',1,'tag','ZeroMarker');
+                obj.handles.eventonset = line(axe,[0 0],[0 max(c(:))*1.1],'color',[0.6 0.6 0.6],'linewidth',1,'tag','ZeroMarker');
             end
             
             for i = 1:size(c,1)
-                par.handles.plot(i) = histogram(axe, ...
+                obj.handles.plot(i) = histogram(axe, ...
                     'BinEdges',b, ...
                     'BinCounts',c(i,:), ...
                     'FaceColor',cm(i,:), ...
@@ -90,7 +84,7 @@ classdef PSTH < handle & dynamicprops
             hold(axe,'off')
             
             if size(c,1) > 1
-                set([par.handles.plot],'FaceAlpha',0.7);
+                set([obj.handles.plot],'FaceAlpha',0.7);
             end
             
             xlabel(axe,'time (s)');
@@ -113,9 +107,11 @@ classdef PSTH < handle & dynamicprops
             
             axis(axe,'tight');
             
-            if par.showlegend, legend([par.handles.plot]); end
+            if par.showlegend, legend([obj.handles.plot]); end
             
-            epa.helper.setfont(axe);            
+            epa.helper.setfont(axe);
+            
+            if nargout == 0, clear obj; end
         end
         
         
