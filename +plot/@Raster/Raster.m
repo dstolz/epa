@@ -33,13 +33,7 @@ classdef Raster < handle & dynamicprops
             
             par = epa.helper.parse_parameters(obj,varargin);
             
-            p = properties(obj);
-            p(ismember(p,'DataFormat')) = [];
-            fn = fieldnames(par);
-            p = intersect(p,fn);
-            for i = 1:length(p)
-                obj.(p{i}) = par.(p{i});
-            end
+            epa.helper.par2obj(obj,par);
             
         end
         

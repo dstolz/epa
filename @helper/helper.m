@@ -44,6 +44,22 @@ classdef helper < handle
             end
         end
         
+        function par2obj(obj,par)
+            m = metaclass(obj);
+            p = m.PropertyList;
+            ind = [p.Constant] ...
+                | [p.Abstract] ...
+                | [p.Dependent] ...
+                | ismember({p.SetAccess},{'private','protected'});
+            p(ind) = [];
+            p = {p.Name};
+            fn = fieldnames(par);
+            p = intersect(p,fn);
+            for i = 1:length(p)
+                obj.(p{i}) = par.(p{i});
+            end
+        end
+        
         function cm = colormap(cm,n)
             
             if isempty(cm)

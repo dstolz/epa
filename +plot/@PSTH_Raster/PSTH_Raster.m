@@ -37,14 +37,9 @@ classdef PSTH_Raster < handle & dynamicprops
             
             par = epa.helper.parse_parameters(obj,varargin);
             
-            p = properties(obj);
-            p(ismember(p,'DataFormat')) = [];
-            fn = fieldnames(par);
-            p = intersect(p,fn);
-            for i = 1:length(p)
-                obj.(p{i}) = par.(p{i});
-            end
-            
+            epa.helper.par2obj(obj,par);
+%             
+%             epa.
         end
         
         function set.window(obj,w)
@@ -66,7 +61,7 @@ classdef PSTH_Raster < handle & dynamicprops
             t.Padding = 'none';
             t.TileSpacing = 'none';
             
-            if isa(obj.ax.Parent,'matlab.graphics.layout.TiledChartLayout')
+            if isa(t.Parent,'matlab.graphics.layout.TiledChartLayout')
                 t.Layout.Tile = obj.ax.Layout.Tile;
                 t.Layout.TileSpan = obj.ax.Layout.TileSpan;
             end
