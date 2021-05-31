@@ -48,7 +48,7 @@ classdef DataViewer < handle
             
             obj.create_nav;
             
-            if isa(varargin{1},'epa.Session')
+            if nargin > 0 && isa(varargin{1},'epa.Session')
                 obj.Session = varargin{1};
             end
             
