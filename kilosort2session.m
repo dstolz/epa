@@ -1,7 +1,6 @@
 function S = kilosort2session(DataPath,TDTTankPath)
 % S = kilosort2session(DataPath,[TDTTankPath])
 % 
-% 
 % ex:   DataPath = 'C:\Path\To\Sorted\Data\';
 %       S = epa.kilosort2session(DataPath);
 % 
@@ -24,7 +23,9 @@ function S = kilosort2session(DataPath,TDTTankPath)
 %       > expected to have a structure variable called 'ops'
 %   *concat_breakpoints.csv
 %   *concat_cluster*.txt
+%       > searched for exhaustively through all subdirectories
 %   *trialInfo.csv
+%       > searched for exhaustively through all subdirectories
 % 
 % Note that the asterisk, '*', is a wildcard that can stand for any string.
 % 
