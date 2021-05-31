@@ -4,18 +4,24 @@ DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-228\210227_co
 TDTTankPath = DataPath;
 S = epa.kilosort2session(DataPath,TDTTankPath);
 
-%% DataViewer GUI
+%% DataBrowser GUI
 
-D = epa.DataViewer;
+D = epa.DataBrowser;
 
-%%
+%% Access currently selected data
 
-D.plot
+C = D.curClusters;
 
-%% Load saved Session objects
+E1 = D.curEvent1;
+E2 = D.curEvent2;
 
-% load('TEST_SESSIONS.mat')
-load('TEST_SESSIONS_Subject-227.mat')
+E1vals = D.curEvent1Values;
+E2vals = D.curEvent2Values;
+
+curSession = D.curSession;
+
+
+
 
 %% Example 1a - Using 'Name,Value' paired input
 S(2).Clusters(3).plot_raster('event',"AMdepth");
