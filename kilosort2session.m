@@ -75,7 +75,6 @@ clusterAlias = cellfun(@(a) a(find(a == '_',1,'last')+1:find(a=='.',1,'last')-1)
 
 % Create a Session object for each recording block,
 % split up spiketimes into sessions based on breakpoints
-clear S
 for i = 1:length(BPfileroot)
     S(i) = epa.Session(ops.fs);
     S(i).Name = BPfileroot{i};
@@ -151,10 +150,10 @@ for t = 1:length(d)
     
     % Tank block name(s) should be the same as one or more of the Sessions ???    
     
-    blockName = TDT2mat(tankFFN);
+    blockName = epa.TDT2mat(tankFFN);
     blockName = blockName{1};
     
-    tankData = TDT2mat(tankFFN,blockName,'TYPE',2,'VERBOSE',false);
+    tankData = epa.TDT2mat(tankFFN,blockName,'TYPE',2,'VERBOSE',false);
     
     ind = [S.Name] == string(blockName);
     
