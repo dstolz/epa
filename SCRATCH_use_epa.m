@@ -1,3 +1,17 @@
+%% Create a new Session object(s)
+
+DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-228\210227_concat_organized\';
+TDTTankPath = DataPath;
+S = epa.kilosort2session(DataPath,TDTTankPath);
+
+%% DataViewer GUI
+
+D = epa.DataViewer;
+
+%%
+
+D.plot
+
 %% Load saved Session objects
 
 % load('TEST_SESSIONS.mat')
@@ -87,10 +101,6 @@ for C = [Stuning.Clusters]
 end
 
 sgtitle(Stuning.Name)
-
-%% DataViewer GUI
-
-D = epa.DataViewer;
 
 
 

@@ -66,7 +66,7 @@ BPtimes = [0; BPtimes]; % makes indexing spikes later easier
 
 
 % load spike clusters with spike times (in secconds) from txt files
-d = dir(fullfile(DataPath,'*concat_cluster*.txt'));
+d = dir(fullfile(DataPath,'**\*concat_cluster*.txt'));
 ffn = cellfun(@fullfile,{d.folder},{d.name},'uni',0);
 ST  = cellfun(@dlmread,ffn,'uni',0);
 
@@ -91,7 +91,7 @@ end
 
 
 %% Read Events from CSV files with event information
-d = dir(fullfile(DataPath,'*trialInfo.csv'));
+d = dir(fullfile(DataPath,'**\*trialInfo.csv'));
 
 onsetEvent  = 'Trial_onset';
 offsetEvent = 'Trial_offset';
@@ -138,7 +138,7 @@ end
 if isempty(TDTTankPath), return; end
 
 %% Read Events from TDT Tank
-d = dir(fullfile(DataPath,'*.Tbk'));
+d = dir(fullfile(DataPath,'**\*.Tbk'));
 
 warning('off','MATLAB:ui:actxcontrol:FunctionToBeRemoved');
 for t = 1:length(d)
