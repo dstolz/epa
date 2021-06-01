@@ -1,9 +1,7 @@
 classdef Raster < epa.plot.PlotType
     
     
-    properties (SetObservable, AbortSet)
-        Cluster        (1,1) %epa.Cluster
-        
+    properties (SetObservable, AbortSet)        
         event           % event name
         eventvalue     (1,:)
         
@@ -14,7 +12,6 @@ classdef Raster < epa.plot.PlotType
         
         sortevents     (1,:) char {mustBeMember(sortevents,{'original','events'})} = 'original';
         
-        colormap      = [];
     end
     
     

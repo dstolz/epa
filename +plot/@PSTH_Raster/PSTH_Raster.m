@@ -2,7 +2,6 @@ classdef PSTH_Raster < epa.plot.PlotType
     
     
     properties (SetObservable, AbortSet)
-        Cluster        (1,1) %epa.Cluster
         
         event           % event name
         eventvalue     (1,:)
@@ -13,7 +12,6 @@ classdef PSTH_Raster < epa.plot.PlotType
         showlegend     (1,1) logical {mustBeNonempty} = false;
         showeventonset (1,1) logical {mustBeNonempty} = true;
         
-        colormap      = [];
         
         sortevents     (1,:) char {mustBeMember(sortevents,{'original','events'})} = 'original';
     end
@@ -66,13 +64,14 @@ classdef PSTH_Raster < epa.plot.PlotType
                     t.Layout.Tile = obj.ax.Layout.Tile;
                     t.Layout.TileSpan = obj.ax.Layout.TileSpan;
                 end
+                obj.handles.tiledlayout = t;
             end
             
             R = obj.Raster;
             P = obj.PSTH;
             
             if isempty(R) || isempty(R.ax) || ~ishandle(R.ax) || ~isvalid(R.ax)
-                axR = nexttile(t);
+                axR = nexttile(obj.handles.tiledlayout);
                 axR.Layout.Tile = 1;
                 axR.Layout.TileSpan = [3 1];
             else

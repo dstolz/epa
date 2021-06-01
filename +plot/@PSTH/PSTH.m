@@ -2,8 +2,6 @@ classdef PSTH < epa.plot.PlotType
     
     
     properties (SetObservable, AbortSet)
-        Cluster        (1,1) %epa.Cluster
-        
         event           % event name
         eventvalue     (1,:)
         
@@ -13,7 +11,6 @@ classdef PSTH < epa.plot.PlotType
         showlegend     (1,1) logical {mustBeNonempty} = false;
         showeventonset (1,1) logical {mustBeNonempty} = true;
         
-        colormap      = [];
         
     end
     
@@ -110,6 +107,8 @@ classdef PSTH < epa.plot.PlotType
             if par.showlegend, legend([obj.handles.plot]); end
             
             epa.helper.setfont(axe);
+            
+            obj.show_infotext;
             
             if nargout == 0, clear obj; end
         end

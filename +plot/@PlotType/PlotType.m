@@ -11,9 +11,12 @@ classdef PlotType < handle & dynamicprops
     
     
     
-    properties (SetObservable)
-        showinfo
-        infolocation
+    properties (SetObservable,AbortSet)
+        Cluster        (1,1) %epa.Cluster
+        colormap      = [];
+        showinfo        (1,1) logical = true
+        infolocation    (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [0 -1.7 0];
+        info
     end
     
     properties
@@ -48,8 +51,27 @@ classdef PlotType < handle & dynamicprops
             obj.els.Enabled = tf;
         end
         
+        function show_infotext(obj)
+            if ~isfield(obj.handles,'info') || isempty(obj.handles.info) || ~isvalid(obj.handles.info)
+                obj.handles.info = text(obj.ax);
+            end
+            t = obj.handles.info;
+            t.Position = obj.infolocation;
+            t.String = obj.info;
+            t.LineStyle = 'none';
+            t.FontSize = 8;
+            t.FontName = 'Consolas';
+            t.Units = 'pixels';
+            obj.handles.info = t;
+        end
         
-        
+        function s = get.info(obj)
+            if isequal(obj.Cluster,0)
+                s = {''};
+            else
+                s = sprintf('%s [%d]',obj.Cluster.TitleStr,obj.Cluster.N);
+            end
+        end
         
         function axes_destroyed(obj,src,event)
             delete(obj.els);

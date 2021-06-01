@@ -1,9 +1,7 @@
 classdef RFMap < epa.plot.PlotType
     
     
-    properties (SetObservable, AbortSet)
-        Cluster        (1,1) %epa.Cluster
-        
+    properties (SetObservable, AbortSet)        
         eventx          % event name
         eventy
         eventxvalue    (1,:)
@@ -15,7 +13,6 @@ classdef RFMap < epa.plot.PlotType
         
         smoothdata     (1,1) double {mustBeNonnegative,mustBeFinite} = 3;
         
-        colormap      = 'jet';
     end
     
     properties (SetAccess = private)

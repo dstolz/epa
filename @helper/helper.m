@@ -99,7 +99,9 @@ classdef helper < handle
         function t = plot_types
            pt = fullfile(epa.helper.rootdir,'+epa','+plot','@*');
            d = dir(pt);
+           d(~[d.isdir]) = [];
            t = {d.name};
+           t(ismember(t,'@PlotType')) = [];
            t = cellfun(@(a) a(2:end),t,'uni',0);
         end
         
