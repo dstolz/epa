@@ -13,7 +13,7 @@ end
 
 
 
-% main grid layout
+% main grid Layout
 NavGrid = uigridlayout(obj.parent);
 NavGrid.ColumnWidth = {'0.4x','0.13x','0.13x','0.13x','0.2x'};
 NavGrid.RowHeight   = {25,25,'1x'};
@@ -124,7 +124,7 @@ obj.handles.SelectEvent2Values = h;
 
 % Plot
 PlotGrid = uigridlayout(NavGrid);
-PlotGrid.ColumnWidth = {'1x'};
+PlotGrid.ColumnWidth = {'1x','1x'};
 PlotGrid.RowHeight = {25,'1x',25,50};
 PlotGrid.Padding = [0 0 0 0];
 PlotGrid.Layout.Column = 5;
@@ -132,21 +132,32 @@ PlotGrid.Layout.Row = [2 length(NavGrid.RowHeight)];
 obj.handles.PlotGrid = PlotGrid;
 
 h = uidropdown(PlotGrid,'CreateFcn',@obj.create_plotdropdown);
+h.Layout.Column = [1 2];
+h.Layout.Row    = 1;
 h.ValueChangedFcn = @obj.plot_style_value_changed;
 obj.handles.SelectPlotStyle = h;
 
 h = uilistbox(PlotGrid);
+h.Layout.Column = [1 2];
+h.Layout.Row    = 2;
 h.ValueChangedFcn = @obj.select_parameter;
 obj.handles.ParameterList = h;
 
 h = uieditfield(PlotGrid);
+h.Layout.Column = [1 2];
+h.Layout.Row    = 3;
 h.ValueChangedFcn = @obj.parameter_edit;
 obj.handles.ParameterEdit = h;
 
 h = uibutton(PlotGrid);
+h.Layout.Column = [1 2];
+h.Layout.Row    = 4;
 h.Text = 'Plot';
 h.ButtonPushedFcn = @obj.plot;
 obj.handles.PlotButton = h;
+
+
+obj.handles.AutoUpdatePlotButton = h;
 
 
 
