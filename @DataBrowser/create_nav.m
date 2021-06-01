@@ -15,7 +15,7 @@ end
 
 % main grid Layout
 NavGrid = uigridlayout(obj.parent);
-NavGrid.ColumnWidth = {'0.4x','0.13x','0.13x','0.13x','0.2x'};
+NavGrid.ColumnWidth = {'0.3x','0.24x','0.13x','0.13x','0.2x'};
 NavGrid.RowHeight   = {25,25,'1x'};
 obj.handles.NavGrid = NavGrid;
 
@@ -63,25 +63,48 @@ h.handle.Tooltip = 'Select a Session';
 obj.handles.SelectSession = h;
 
 
-
-
-% Clusters
-h = uilabel(NavGrid);
+h = uitabgroup(NavGrid);
 h.Layout.Column = 2;
-h.Layout.Row = 2;
-h.FontWeight = 'bold';
-h.Text = 'Clusters';
+h.Layout.Row = [2 3];
+obj.handles.TabGroup = h;
+tg = h;
 
-h = epa.ui.SelectObject(NavGrid,'epa.Cluster','uilistbox');
-h.handle.Layout.Column = 2;
-h.handle.Layout.Row = 3;
+
+% Streams
+h = uitab(tg,'Title','Streams');
+obj.handles.StreamsTab = h;
+
+StreamGrid = uigridlayout(h);
+StreamGrid.ColumnWidth = {'1x'};
+StreamGrid.RowHeight   = {'1x'};
+obj.handles.ClustGrid = StreamGrid;
+
+h = epa.ui.SelectObject(StreamGrid,'epa.Stream','uilistbox');
 h.handle.Enable = 'off';
-h.handle.Tag = 'SelectClusters';
+h.handle.Tag = 'SelectStreams';
 h.handle.Multiselect = 'on';
-h.handle.Tooltip = 'Select a Cluster or Clusters';
+h.handle.Tooltip = 'Select Streams';
 obj.handles.SelectClusters = h;
 
 
+% Clusters
+h = uitab(tg,'Title','Clusters');
+obj.handles.ClustersTab = h;
+
+ClustGrid = uigridlayout(h);
+ClustGrid.ColumnWidth = {'1x'};
+ClustGrid.RowHeight   = {'1x'};
+obj.handles.ClustGrid = ClustGrid;
+
+h = epa.ui.SelectObject(ClustGrid,'epa.Cluster','uilistbox');
+h.handle.Enable = 'off';
+h.handle.Tag = 'SelectClusters';
+h.handle.Multiselect = 'on';
+h.handle.Tooltip = 'Select Clusters';
+obj.handles.SelectClusters = h;
+
+% select ClustersTab by default
+obj.handles.TabGroup.SelectedTab = obj.handles.ClustersTab;
 
 
 % Event1
