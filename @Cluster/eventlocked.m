@@ -18,7 +18,7 @@ function [t,eidx,vid] = eventlocked(obj,varargin)
 %   vid  ...    [Nx1] Values of Events corresponding to each spike in t
 % 
 % 
-
+% DJS 2021
 
 
 
@@ -52,14 +52,15 @@ switch lower(par.sorton)
 end
 oot = oot(vidx);
 
-st = obj.SpikeTimes;
-
 if numel(par.window) == 1
     par.window = sort([0 par.window]);
 end
 par.window = par.window(:)';
 
 twin = par.window + oot(:,1);
+
+
+st = obj.SpikeTimes;
 
 t = []; eidx = []; vid = [];
 for i = 1:size(twin,1)
