@@ -17,12 +17,12 @@ classdef PlotType < handle & dynamicprops
         colormap      = [];
         
         showtitle       (1,1) logical = true
-        titleposition   (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [0 1.02 0];
+        titleposition   (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [0 1.05 0];
         title
         titlefontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 10;
         
         showinfo        (1,1) logical = true
-        infoposition    (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [1 1.02 0];
+        infoposition    (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [1 1.05 0];
         info
         infofontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 10;
     end
