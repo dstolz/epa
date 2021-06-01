@@ -67,6 +67,12 @@ classdef Stream < handle & dynamicprops
             si = 1./obj.SamplingRate;
         end
         
+        function set.Time(obj,t)
+            assert(length(t) == obj.N,'epa:Stream:set_Time:UnequalSizedVariables', ...
+                'Time vector length must equal the length of Data');
+
+            obj.Time = t(:)';
+        end
         
     end % methods (Access = public)
 end
