@@ -5,7 +5,7 @@ DataPath = 'G:\My Drive\Caras Lab\ExampleData\SUBJ-ID-228\210227_concat_organize
 TDTTankPath = DataPath;
 S = epa.kilosort2session(DataPath,TDTTankPath);
 
-%% DataBrowser GUI
+%% DataBrowser GUI finds valid Session objects in the base workspace
 
 D = epa.DataBrowser;
 
