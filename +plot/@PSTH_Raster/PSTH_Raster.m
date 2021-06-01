@@ -45,29 +45,29 @@ classdef PSTH_Raster < epa.plot.PlotType
         function plot(obj,src,event)
             if nargin > 1 && isempty(obj.handles), return; end % not yet instantiated by calling obj.plot
             
-            % TODO: FIX PROPERTY UPDATE
-            %obj.setup_plot;
-            if isempty(obj.ax) % || ~ishandle(obj.ax) || ~isvalid(obj.ax)
-                obj.ax = gca; 
-            end
-            
-            cla(obj.ax,'reset');
             
             par = epa.helper.obj2par(obj);
             par = rmfield(par,{'Cluster','DataFormat'});
             fn  = fieldnames(par);
-            
-            obj.ax.Visible = 'off';
-            
-            t = tiledlayout(obj.ax.Parent,10,1);
-            t.Padding = 'none';
-            t.TileSpacing = 'none';
-            
-            if isa(t.Parent,'matlab.graphics.layout.TiledChartLayout')
-                t.Layout.Tile = obj.ax.Layout.Tile;
-                t.Layout.TileSpan = obj.ax.Layout.TileSpan;
+
+            %obj.setup_plot; % do not call here
+            if isempty(obj.ax) % || ~ishandle(obj.ax) || ~isvalid(obj.ax)
+                obj.ax = gca;
+                
+                cla(obj.ax,'reset');
+                
+                obj.ax.Visible = 'off';
+                
+                t = tiledlayout(obj.ax.Parent,10,1);
+                t.Padding = 'none';
+                t.TileSpacing = 'none';
+                
+                if isa(t.Parent,'matlab.graphics.layout.TiledChartLayout')
+                    t.Layout.Tile = obj.ax.Layout.Tile;
+                    t.Layout.TileSpan = obj.ax.Layout.TileSpan;
+                end
             end
-                  
+            
             R = obj.Raster;
             P = obj.PSTH;
             
@@ -89,6 +89,9 @@ classdef PSTH_Raster < epa.plot.PlotType
             axR.YAxis.Color = 'none';
             axR.YAxis.Label.String = 'none';
             
+            obj.Raster = R;
+            
+            
             
             if isempty(P) || isempty(P.ax) || ~ishandle(P.ax) || ~isvalid(P.ax)
                 axP = nexttile(t);
@@ -104,6 +107,11 @@ classdef PSTH_Raster < epa.plot.PlotType
             P.plot;
             axP.Color = 'none';
             axP.Title.String = '';
+            
+            obj.PSTH = P;
+            
+            
+            
             
             t.Toolbar = axtoolbar;
             
