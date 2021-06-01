@@ -1,6 +1,6 @@
 function [data,eidx,v] = eventlocked(obj,varargin)
-% [data,eidx,v] = eventlocked(ContinuousObj,par)
-% [data,eidx,v] = eventlocked(ContinuousObj,'Name',Value,...)
+% [data,eidx,v] = eventlocked(StreamObj,par)
+% [data,eidx,v] = eventlocked(StreamObj,'Name',Value,...)
 %  
 % Input:
 %   eventname     ... char event name
@@ -12,7 +12,7 @@ function [data,eidx,v] = eventlocked(obj,varargin)
 % 
 % 
 % Output:
-%   data ...    [NxP] Continuously sampled data with N trials and P
+%   data ...    [NxP] Streamly sampled data with N trials and P
 %               samples.
 %   eidx ...    [Nx1] Indices of Events corresponding to each trial in data
 %   vid  ...    [Nx1] Values of Events corresponding to each trial in data
@@ -48,7 +48,7 @@ switch lower(par.sorton)
         vidx = 1:length(v);
         
     otherwise
-        error('epa:Continuous:eventlocked','Unknown sorton method: ''%s''',par.sorton)
+        error('epa:Stream:eventlocked','Unknown sorton method: ''%s''',par.sorton)
 end
 oos = oos(vidx);
 

@@ -2,6 +2,7 @@ classdef Session < handle
     
     properties
         Clusters (1,:) epa.Cluster  % An array of Cluster objects
+        Streams  (1,:) epa.Stream   % An array of Stream objects
         Events   (1,:) epa.Event    % An array of Event objects
         
         Name     (1,1) string       % Session name

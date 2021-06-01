@@ -26,9 +26,15 @@ curSession = D.curSession;
 
 
 %% we can use S.find_Session to return a Session based on a substring
-Spost = S.find_Session("Post"); % find the "Passive-Post-210227-125506" session
 
-disp(Spost)
+Spost = S.find_Session("Post"); % return the "Passive-Post-210227-125506" session
+
+% Note that the handle to the Session object is returned so no data is
+% copied. Modifying Spost is the same as modifying S(3)
+isequal(Spost,S(3))
+
+Spost.Clusters(1)
+
 
 %% Example 1a - Using 'Name,Value' paired input
 
@@ -40,7 +46,7 @@ h.eventvalue = 0.5;
 
 h.plot;
 
-%% Update existing plot
+%% Update the existing plot
 h.window = [-0.2 1];
 
 %% Change the plot color

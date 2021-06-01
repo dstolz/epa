@@ -1,4 +1,4 @@
-classdef Continuous < handle & dynamicprops
+classdef Stream < handle & dynamicprops
     
     
     properties
@@ -35,7 +35,7 @@ classdef Continuous < handle & dynamicprops
     methods
         [t,eidx,vid] = eventlocked(obj,varargin)
         
-        function obj = Continuous(SessionObj,data)
+        function obj = Stream(SessionObj,data)
             obj.Session = SessionObj;
             
             if nargin > 1 && ~isempty(data)
@@ -46,7 +46,7 @@ classdef Continuous < handle & dynamicprops
         
         function set.Data(obj,d)
             if ~isempty(d)
-                assert(isvector(d),'epa:Continuous:Data:InvalidSize', ...
+                assert(isvector(d),'epa:Stream:Data:InvalidSize', ...
                     'Continous.Data must be a vector');
             end
             obj.Data = d(:)';
