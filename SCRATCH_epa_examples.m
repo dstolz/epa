@@ -32,7 +32,7 @@ disp(Spost)
 
 %% Example 1a - Using 'Name,Value' paired input
 
-h = epa.plot.PSTH_Raster(Spost.Clusters(3),'event',"AMdepth");
+h = epa.plot.PSTH(Spost.Clusters(3),'event',"AMdepth");
 
 % you can also set properties after creating the plot object
 h.eventvalue = 0.5;
@@ -45,7 +45,7 @@ h.eventvalue = 0.35;
 
 
 %% Stop listening to changes
-h.listenForChanges = false;
+h.listenforchanges = false;
 
 
 %

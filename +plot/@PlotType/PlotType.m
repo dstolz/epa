@@ -10,8 +10,14 @@ classdef PlotType < handle & dynamicprops
     
     
     
+    
+    properties (SetObservable)
+        showinfo
+        infolocation
+    end
+    
     properties
-        listenForChanges (1,1) logical = true
+        listenforchanges (1,1) logical = true
     end
     
     
@@ -37,10 +43,13 @@ classdef PlotType < handle & dynamicprops
             obj.els = epa.helper.listen_for_props(obj,@obj.plot);
         end
         
-        function set.listenForChanges(obj,tf)
-            obj.listenForChanges = tf;
+        function set.listenforchanges(obj,tf)
+            obj.listenforchanges = tf;
             obj.els.Enabled = tf;
         end
+        
+        
+        
         
         function axes_destroyed(obj,src,event)
             delete(obj.els);
@@ -57,7 +66,6 @@ classdef PlotType < handle & dynamicprops
             % not sure why, but ax.DeleteFcn is not being called when the
             % axes object is destroyed ????????
             obj.ax.DeleteFcn = @obj.axes_destroyed;
-                         
         end
     end % methods (Access = protected)
 end
