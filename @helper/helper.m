@@ -74,7 +74,7 @@ classdef helper < handle
                 if n == 1
                     cm = [0 0 0];
                 else
-                    cm = @lines;
+                    cm = @jet;
                 end
             end
             
