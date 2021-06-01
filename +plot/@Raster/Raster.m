@@ -71,7 +71,7 @@ classdef Raster < epa.plot.PlotType
                 par.handles.eventonset = line(axe,[0 0],[0 max(eidx)+1],'color',[0.6 0.6 0.6],'linewidth',1,'tag','ZeroMarker');
             end
             
-            if isfield(par,'plot'), par = rmfield(par,'plot'); end
+            if isfield(obj.handles,'raster'), obj.handles = rmfield(obj.handles,'raster'); end
             for i = 1:length(uv)
                 ind = uv(i) == v;
                 obj.handles.raster(i) = line(axe,t(ind),eidx(ind),'color',cm(i,:), ...
@@ -101,18 +101,15 @@ classdef Raster < epa.plot.PlotType
             
             
             xlabel(axe,'time (s)');
-            
-            title(axe,{S.Name,sprintf('%s [%s] - %s',C.Name,C.Type,E.Name)});
-            
-            % box(axe,'on');
-            
-            epa.helper.setfont(axe);
-            
+                        
             % uncertain why, but this needs to be at the end to work properly
             drawnow
             set([obj.handles.raster.MarkerHandle],'Style','vbar');
             
-            if nargout == 0, clear obj; end
+
+            obj.standard_post_plot;
+            
+            if nargout == 0, clear obj; end        
         end 
     end % methods (Access = public)
   

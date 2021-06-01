@@ -32,7 +32,7 @@ disp(Spost)
 
 %% Example 1a - Using 'Name,Value' paired input
 
-h = epa.plot.PSTH(Spost.Clusters(3),'event',"AMdepth");
+h = epa.plot.Raster(Spost.Clusters(3),'event',"AMdepth");
 
 % you can also set properties after creating the plot object
 h.eventvalue = 0.5;
@@ -40,7 +40,7 @@ h.eventvalue = 0.5;
 h.plot;
 
 %% Update existing plot
-h.eventvalue = 0.35;
+h.window = [-0.2 1];
 
 
 

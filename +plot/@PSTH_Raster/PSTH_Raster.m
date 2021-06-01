@@ -49,7 +49,7 @@ classdef PSTH_Raster < epa.plot.PlotType
             fn  = fieldnames(par);
 
             %obj.setup_plot; % do not call here
-            if isempty(obj.ax) % || ~ishandle(obj.ax) || ~isvalid(obj.ax)
+            if isempty(obj.handles)
                 obj.ax = gca;
                 
                 cla(obj.ax,'reset');
@@ -100,6 +100,7 @@ classdef PSTH_Raster < epa.plot.PlotType
                 axP = P.ax;
             end
             par.ax = axP;
+            par.showinfo = false;
             parv = struct2cell(par);
             parv = [fn parv]';
             P = epa.plot.PSTH(obj.Cluster,parv{:});
@@ -108,9 +109,7 @@ classdef PSTH_Raster < epa.plot.PlotType
             axP.Title.String = '';
             
             obj.PSTH = P;
-            
-            
-            
+                        
             
             t.Toolbar = axtoolbar;
             

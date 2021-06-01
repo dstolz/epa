@@ -15,10 +15,6 @@ classdef RFMap < epa.plot.PlotType
         
     end
     
-    properties (SetAccess = private)
-        handles
-    end
-    
     properties (Constant)
         DataFormat = '2D';
     end
@@ -126,17 +122,16 @@ classdef RFMap < epa.plot.PlotType
             set(axe,'ydir','normal');
             
             cm = epa.helper.colormap(par.colormap,128);
-            colormap(axe,cm); %#ok<CPROPLC>
+            colormap(axe,cm); 
             
             
             xlabel(axe,Ex.Name);
             ylabel(axe,Ey.Name);
             
-            title(axe,{S.Name,sprintf('%s [%s]',C.Name,C.Type)});
+
+            obj.standard_post_plot;
             
-            
-            epa.helper.setfont(axe);
-            
+            if nargout == 0, clear obj; end            
             
         end
     end

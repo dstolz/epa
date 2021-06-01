@@ -56,9 +56,7 @@ classdef PSTH < epa.plot.PlotType
             
             [c,b,uv] = C.psth(par);
             
-            
             cm = epa.helper.colormap(par.colormap,size(c,1));
-            
             
             cla(axe,'reset');
             hold(axe,'on')
@@ -94,21 +92,15 @@ classdef PSTH < epa.plot.PlotType
             end
             
             
-            title(axe,{S.Name,sprintf('%s [%s] - %s',C.Name,C.Type,E.Name)});
             
             axe.XLim = par.window;
-            % box(axe,'on');
             
             axe.XAxis.TickDirection = 'out';
             axe.YAxis.TickDirection = 'out';
             
             axis(axe,'tight');
-            
-            if par.showlegend, legend([obj.handles.plot]); end
-            
-            epa.helper.setfont(axe);
-            
-            obj.show_infotext;
+
+            obj.standard_post_plot;
             
             if nargout == 0, clear obj; end
         end

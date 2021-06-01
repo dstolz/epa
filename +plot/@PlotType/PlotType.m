@@ -15,7 +15,7 @@ classdef PlotType < handle & dynamicprops
         Cluster        (1,1) %epa.Cluster
         colormap      = [];
         showinfo        (1,1) logical = true
-        infolocation    (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [0 -1.7 0];
+        infoposition    (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [1 1.02 0];
         info
     end
     
@@ -56,25 +56,47 @@ classdef PlotType < handle & dynamicprops
                 obj.handles.info = text(obj.ax);
             end
             t = obj.handles.info;
-            t.Position = obj.infolocation;
             t.String = obj.info;
             t.LineStyle = 'none';
             t.FontSize = 8;
             t.FontName = 'Consolas';
-            t.Units = 'pixels';
+            t.Units = 'normalized';
+            t.HorizontalAlignment = 'right';
+            t.Position = obj.infoposition;
             obj.handles.info = t;
         end
+        
         
         function s = get.info(obj)
             if isequal(obj.Cluster,0)
                 s = {''};
             else
-                s = sprintf('%s [%d]',obj.Cluster.TitleStr,obj.Cluster.N);
+                s = sprintf('%s %d',obj.Cluster.TitleStr,obj.Cluster.N);
             end
         end
         
         function axes_destroyed(obj,src,event)
             delete(obj.els);
+        end
+        
+        
+        function set_title(obj,str)
+            if nargin < 2 || isempty(str) 
+                obj.ax.Title.String = {obj.Cluster.Session.Name};
+            else
+                obj.ax.Title.String = str;
+            end
+        end
+        
+        function standard_post_plot(obj)
+                        
+            if obj.showlegend, legend([obj.handles.plot]); end
+
+            obj.set_title;
+            
+            epa.helper.setfont(obj.ax);
+            
+            if obj.showinfo, obj.show_infotext; end
         end
         
     end % methods (Access = public)
