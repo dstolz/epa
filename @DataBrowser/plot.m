@@ -31,6 +31,7 @@ switch tmpObj.DataFormat
         error('Unrecognized plot DataFormat, ''%s''',tmpObj.DataFormat)
 end
 
+par.showlegend = false;
 
 par.parent = f;
 
@@ -44,26 +45,12 @@ for s = 1:length(S)
         ax = nexttile(t);
         par.ax = ax;
         
-        if isfield(par,'showlegend')
-            par.showlegend = false;
-        end
-        
         SC = S(s).find_Cluster(C(c).Name);
         
         pObj = feval(ps,SC,par);
         pObj.plot;
         
         set(par.ax,'UserData',pObj);
-        
-        if c == 1
-            ax.YAxis.Label.String = {S(s).Name,ax.YAxis.Label.String};
-        end
-        
-        if s == 1
-            ax.Title.String = SC.Name;
-        else
-            ax.Title.String = "";
-        end
     end
 end
 
