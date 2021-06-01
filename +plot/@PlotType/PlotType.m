@@ -2,6 +2,7 @@ classdef PlotType < handle & dynamicprops
     
     properties (Abstract,Constant)
         DataFormat
+        Style
     end
     
     methods (Abstract)
@@ -14,9 +15,16 @@ classdef PlotType < handle & dynamicprops
     properties (SetObservable,AbortSet)
         Cluster        (1,1) %epa.Cluster
         colormap      = [];
+        
+        showtitle       (1,1) logical = true
+        titleposition   (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [0 1.02 0];
+        title
+        titlefontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 10;
+        
         showinfo        (1,1) logical = true
         infoposition    (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [1 1.02 0];
         info
+        infofontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 10;
     end
     
     properties
@@ -24,7 +32,7 @@ classdef PlotType < handle & dynamicprops
     end
     
     
-    properties % immutable???
+    properties (Transient) % immutable???
         ax
     end
     
@@ -32,7 +40,7 @@ classdef PlotType < handle & dynamicprops
         els
     end
     
-    properties (SetAccess = protected)
+    properties (SetAccess = protected,Transient)
         handles
     end
     
@@ -58,7 +66,7 @@ classdef PlotType < handle & dynamicprops
             t = obj.handles.info;
             t.String = obj.info;
             t.LineStyle = 'none';
-            t.FontSize = 8;
+            t.FontSize = obj.infofontsize;
             t.FontName = 'Consolas';
             t.Units = 'normalized';
             t.HorizontalAlignment = 'right';
@@ -80,24 +88,61 @@ classdef PlotType < handle & dynamicprops
         end
         
         
-        function set_title(obj,str)
+        function show_title(obj,str)
+            if ~isfield(obj.handles,'title') || isempty(obj.handles.title) || ~isvalid(obj.handles.title)
+                obj.handles.title = text(obj.ax);
+            end
+            t = obj.handles.title;
+            t.LineStyle = 'none';
+            t.FontSize = obj.titlefontsize;
+            t.FontName = 'Consolas';
+            t.Units = 'normalized';
+            t.HorizontalAlignment = 'left';
+            t.Position = obj.titleposition;
+            obj.handles.title = t;
+            
             if nargin < 2 || isempty(str) 
-                obj.ax.Title.String = {obj.Cluster.Session.Name};
+                t.String = obj.title;
             else
-                obj.ax.Title.String = str;
+                t.String = str;
             end
         end
         
-        function standard_post_plot(obj)
-                        
-            if obj.showlegend, legend([obj.handles.plot]); end
-
-            obj.set_title;
-            
-            epa.helper.setfont(obj.ax);
-            
-            if obj.showinfo, obj.show_infotext; end
+        
+        function s = get.title(obj)
+            if isequal(obj.Cluster,0)
+                s = {''};
+            else
+                s = {obj.Cluster.Session.Name};
+            end
         end
+        
+        function standard_plot_postamble(obj)
+            if obj.showtitle, obj.show_title; end
+            if obj.showinfo, obj.show_infotext; end
+            if obj.showlegend, obj.handles.legend = legend([obj.handles.plot]); end
+
+            epa.helper.setfont(obj.ax);
+
+            obj.ax.Color = 'none';
+        end
+        
+        
+        
+        function par = saveobj(obj)
+            par = epa.helper.obj2par(obj);
+            
+            % dump any transient properties
+            m = metaclass(obj);
+            p = m.PropertyList;
+            p(~[p.Transient]) = [];
+            p = {p.Name};
+            idx = find(ismember(p,fieldnames(par)));
+            for i = 1:length(idx)
+                par.(p{idx(i)}) = [];
+            end
+        end
+        
         
     end % methods (Access = public)
       
@@ -112,4 +157,10 @@ classdef PlotType < handle & dynamicprops
             obj.ax.DeleteFcn = @obj.axes_destroyed;
         end
     end % methods (Access = protected)
+    
+    methods (Static)
+        function obj = loadobj(par)
+            obj = epa.plot.(par.Style)(par.Cluster,par);
+        end
+    end
 end

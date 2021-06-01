@@ -78,13 +78,13 @@ classdef helper < handle
                 end
             end
             
-            if ischar(cm) || isstring(cm)
+            if ischar(cm)
                 cm = str2func(cm);
             end
             
             if isa(cm,'function_handle')
                 cm = cm(n);
-            else
+            elseif size(cm,1) == n
                 cm = cm(1:n,:);
             end
         end

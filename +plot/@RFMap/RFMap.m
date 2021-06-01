@@ -17,6 +17,7 @@ classdef RFMap < epa.plot.PlotType
     
     properties (Constant)
         DataFormat = '2D';
+        Style = 'RFMap';
     end
     
     methods
@@ -129,9 +130,8 @@ classdef RFMap < epa.plot.PlotType
             ylabel(axe,Ey.Name);
             
 
-            obj.standard_post_plot;
+            obj.standard_plot_postamble;
             
-            if nargout == 0, clear obj; end            
             
         end
     end

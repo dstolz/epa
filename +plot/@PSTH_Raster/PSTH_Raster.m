@@ -25,6 +25,7 @@ classdef PSTH_Raster < epa.plot.PlotType
         
     properties (Constant)
         DataFormat = '1D';
+        Style = 'PSTH_Raster';
     end
     
     methods
@@ -38,6 +39,8 @@ classdef PSTH_Raster < epa.plot.PlotType
             if numel(w) == 1, w = sort([0 w]); end
             obj.window = w(:)';
         end
+        
+       
         
         
         function plot(obj,src,event)
@@ -101,12 +104,12 @@ classdef PSTH_Raster < epa.plot.PlotType
             end
             par.ax = axP;
             par.showinfo = false;
+            par.showtitle = false;
             parv = struct2cell(par);
             parv = [fn parv]';
             P = epa.plot.PSTH(obj.Cluster,parv{:});
             P.plot;
             axP.Color = 'none';
-            axP.Title.String = '';
             
             obj.PSTH = P;
                         
@@ -120,7 +123,6 @@ classdef PSTH_Raster < epa.plot.PlotType
             obj.handles.Raster = R.handles;
             obj.handles.PSTH   = P.handles;
             
-            if nargout == 0, clear obj; end
         end
         
     end

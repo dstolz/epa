@@ -9,14 +9,13 @@ classdef PSTH < epa.plot.PlotType
         window         (1,2) double {mustBeNonempty,mustBeFinite} = [0 1];
         normalization  (1,:) char {mustBeNonempty,mustBeMember(normalization,{'count','firingrate','countdensity','probability','cumcount','cdf','pdf'})} = 'count';
         showlegend     (1,1) logical {mustBeNonempty} = false;
-        showeventonset (1,1) logical {mustBeNonempty} = true;
-        
-        
+        showeventonset (1,1) logical {mustBeNonempty} = true;        
     end
     
     
     properties (Constant)
         DataFormat = '1D';
+        Style = 'PSTH';
     end
     
     methods
@@ -100,9 +99,8 @@ classdef PSTH < epa.plot.PlotType
             
             axis(axe,'tight');
 
-            obj.standard_post_plot;
+            obj.standard_plot_postamble;
             
-            if nargout == 0, clear obj; end
         end
         
         

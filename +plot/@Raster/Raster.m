@@ -17,6 +17,7 @@ classdef Raster < epa.plot.PlotType
     
     properties (Constant)
         DataFormat = '1D';
+        Style = 'Raster';
     end
     
     methods
@@ -107,9 +108,8 @@ classdef Raster < epa.plot.PlotType
             set([obj.handles.raster.MarkerHandle],'Style','vbar');
             
 
-            obj.standard_post_plot;
+            obj.standard_plot_postamble;
             
-            if nargout == 0, clear obj; end        
         end 
     end % methods (Access = public)
   
