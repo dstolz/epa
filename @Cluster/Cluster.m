@@ -36,9 +36,7 @@ classdef Cluster < handle & dynamicprops
     methods
         [t,eidx,vid] = eventlocked(obj,varargin)
         [c,b,v] = psth(obj,varargin)
-        par = plot_psth(obj,varargin)
-        par = plot_raster(obj,varargin)
-        par = plot_summary(obj,varargin)
+        
         
         function obj = Cluster(SessionObj,ID,SpikeTimes,SpikeWaveforms)
             narginchk(2,4)

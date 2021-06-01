@@ -14,7 +14,6 @@ classdef Stream < handle & dynamicprops
         Note     (:,1) string   % User notes
         
         TitleStr (1,1) string   % auto generated if empty
-        
     end
     
     
