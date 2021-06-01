@@ -34,7 +34,8 @@ classdef Session < handle
         end
         
         function add_Event(obj,varargin)
-            existingEvents = [obj.Events.Name];
+            
+            existingEvents = obj.EventNames;
             
             if isa(varargin{1},'epa.Event')
                 en = varargin{1}.Name;

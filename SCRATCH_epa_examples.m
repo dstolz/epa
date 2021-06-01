@@ -1,6 +1,6 @@
 %% Create a new Session object(s)
 
-DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-228\210227_concat_organized\';
+DataPath = 'G:\My Drive\Caras Lab\ExampleData\SUBJ-ID-228\210227_concat_organized';
 % DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-219\210129_concat';
 TDTTankPath = DataPath;
 S = epa.kilosort2session(DataPath,TDTTankPath);

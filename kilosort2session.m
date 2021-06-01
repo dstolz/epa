@@ -138,33 +138,30 @@ end
 if isempty(TDTTankPath), return; end
 
 %% Read Events from TDT Tank
-d = dir(fullfile(DataPath,'**\*.Tbk'));
+addpath(fullfile(epa.helper.rootdir,'+epa','TDTbin2mat'));
 
-warning('off','MATLAB:ui:actxcontrol:FunctionToBeRemoved');
-for t = 1:length(d)
-    tank = fullfile(d(t).folder,d(t).name);
+d = dir(fullfile(DataPath,'**\*.Tbk'));
+sn = cellstr([S.Name]);
+for t = 1:length(d)    
+    blockPth = d(t).folder;
+    [~,blockName,~] = fileparts(d(t).name);
     
-    [~,tankName,~] = fileparts(tank);
+    ind = cellfun(@(a) contains(blockName,a),sn);
     
-    tankFFN = fullfile(d(t).folder,d(t).name);
+    assert(sum(ind) == 1,'epa:kilosort2ssession:InvalidTDTBlock', ...
+        'Found %d TDT blocks matching "%s"',sum(ind),blockName)
+       
     
-    % Tank block name(s) should be the same as one or more of the Sessions ???    
+    fprintf('Adding Events from TDT Tank for Session "%s" ...',S(ind).Name)
     
-    blockName = epa.TDT2mat(tankFFN);
-    blockName = blockName{1};
+    data = TDTbin2mat(blockPth,'TYPE',2,'VERBOSE',0);
     
-    tankData = epa.TDT2mat(tankFFN,blockName,'TYPE',2,'VERBOSE',false);
-    
-    ind = [S.Name] == string(blockName);
-    
-    fprintf('Adding Events from TDT Tank for "%s" ...',S(ind).Name)
-    eventInfo = tankData.epocs;
+    eventInfo = data.epocs;
     eventNames = fieldnames(eventInfo);
     for i = 1:length(eventNames)
         e = eventInfo.(eventNames{i});
         onoffs = [e.onset e.offset];
         S(ind).add_Event(eventNames{i}, onoffs, e.data);
     end
-    fprintf(' done\n')    
+    
 end
-warning('on','MATLAB:ui:actxcontrol:FunctionToBeRemoved');
