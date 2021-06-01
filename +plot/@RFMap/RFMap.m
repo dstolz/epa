@@ -41,12 +41,10 @@ classdef RFMap < epa.plot.PlotType
             axe = obj.ax;
             cla(axe,'reset');
             
-            S = obj.Cluster.Session;
             C = obj.Cluster;
+            S = C.Session;
             
-            
-            cla(axe,'reset');
-            
+                       
                         
             if ~isa(obj.eventx,'epa.Event')
                 obj.eventx = S.find_Event(obj.eventx);
@@ -58,22 +56,19 @@ classdef RFMap < epa.plot.PlotType
             end
             
             Ex = obj.eventx;
-            Ey = obj.eventy;
-
-            par = epa.helper.obj2par(obj);
-            
+            Ey = obj.eventy;            
             
             
             [vx,ootx] = Ex.subset(obj.eventxvalue);
             [vy,ooty] = Ey.subset(obj.eventyvalue);
             
             doot = ootx - ooty;
-            ind = doot>par.onsettolerance;
+            ind = doot>obj.onsettolerance;
             ootx(ind) = [];
             vx(ind) = [];
             vy(ind) = [];
             
-            Fs = obj.Cluster.SamplingRate;
+            Fs = C.SamplingRate;
             ons = round(Fs.*ootx(:,1));
 
             wins = round(Fs.*obj.window);
@@ -82,7 +77,7 @@ classdef RFMap < epa.plot.PlotType
             uvx = unique(vx);
             uvy = unique(vy);
             
-            ss = obj.Cluster.SpikeSamples;
+            ss = C.SpikeSamples;
             
             data = zeros(length(uvy),length(uvx));
             for ix = 1:length(uvx)
@@ -120,9 +115,9 @@ classdef RFMap < epa.plot.PlotType
             
             
             obj.handles.rf = imagesc(axe,uvx,uvy,data);
-            set(axe,'ydir','normal');
+            axe.YDir = 'normal';
             
-            cm = epa.helper.colormap(par.colormap,128);
+            cm = epa.helper.colormap(obj.colormap,128);
             colormap(axe,cm); 
             
             

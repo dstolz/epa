@@ -7,7 +7,6 @@ classdef Raster < epa.plot.PlotType
         
         window         (1,2) double {mustBeFinite} = [0 1];
         
-        showlegend     (1,1) logical = false;
         showeventonset (1,1) logical = true;
         
         sortevents     (1,:) char {mustBeMember(sortevents,{'original','events'})} = 'original';

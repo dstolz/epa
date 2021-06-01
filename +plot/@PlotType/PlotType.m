@@ -25,6 +25,8 @@ classdef PlotType < handle & dynamicprops
         infoposition    (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [1 1.05 0];
         info
         infofontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 10;
+        
+        showlegend     (1,1) logical {mustBeNonempty} = false;
     end
     
     properties

@@ -8,7 +8,6 @@ classdef PSTH < epa.plot.PlotType
         binsize        (1,1) double {mustBeNonempty,mustBePositive,mustBeFinite} = 0.01;
         window         (1,2) double {mustBeNonempty,mustBeFinite} = [0 1];
         normalization  (1,:) char {mustBeNonempty,mustBeMember(normalization,{'count','firingrate','countdensity','probability','cumcount','cdf','pdf'})} = 'count';
-        showlegend     (1,1) logical {mustBeNonempty} = false;
         showeventonset (1,1) logical {mustBeNonempty} = true;        
     end
     
