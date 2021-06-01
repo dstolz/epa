@@ -17,14 +17,12 @@ classdef PlotType < handle & dynamicprops
         colormap      = [];
         
         showtitle       (1,1) logical = true
-        titleposition   (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [0 1.05 0];
         title
-        titlefontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 10;
+        titlefontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 8;
         
         showinfo        (1,1) logical = true
-        infoposition    (1,:) double {mustBeFinite,mustBeNonempty,mustBeNonNan} = [1 1.05 0];
         info
-        infofontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 10;
+        infofontsize   (1,1) double {mustBePositive,mustBeFinite,mustBeNonempty} = 8;
         
         showlegend     (1,1) logical {mustBeNonempty} = false;
     end
@@ -62,18 +60,12 @@ classdef PlotType < handle & dynamicprops
         end
         
         function show_infotext(obj)
-            if ~isfield(obj.handles,'info') || isempty(obj.handles.info) || ~isvalid(obj.handles.info)
-                obj.handles.info = text(obj.ax);
-            end
-            t = obj.handles.info;
-            t.String = obj.info;
-            t.LineStyle = 'none';
-            t.FontSize = obj.infofontsize;
-            t.FontName = 'Consolas';
-            t.Units = 'normalized';
-            t.HorizontalAlignment = 'right';
-            t.Position = obj.infoposition;
-            obj.handles.info = t;
+            obj.ax.Title.String{end+1} = obj.info;
+            obj.ax.Title.HorizontalAlignment = 'left';
+            obj.ax.Title.Position(1) = obj.ax.XLim(1);
+            obj.ax.Title.FontName = 'Consolas';
+            obj.ax.Title.FontSize = obj.titlefontsize;
+            obj.ax.TitleFontSizeMultiplier = 1;
         end
         
         
@@ -91,35 +83,29 @@ classdef PlotType < handle & dynamicprops
         
         
         function show_title(obj,str)
-            if ~isfield(obj.handles,'title') || isempty(obj.handles.title) || ~isvalid(obj.handles.title)
-                obj.handles.title = text(obj.ax);
-            end
-            t = obj.handles.title;
-            t.LineStyle = 'none';
-            t.FontSize = obj.titlefontsize;
-            t.FontName = 'Consolas';
-            t.Units = 'normalized';
-            t.HorizontalAlignment = 'left';
-            t.Position = obj.titleposition;
-            obj.handles.title = t;
-            
             if nargin < 2 || isempty(str) 
-                t.String = obj.title;
+                obj.ax.Title.String = obj.title;
             else
-                t.String = str;
+                obj.ax.Title.String = str;
             end
+            obj.ax.Title.HorizontalAlignment = 'left';
+            obj.ax.Title.Position(1) = obj.ax.XLim(1);
+            obj.ax.Title.FontName = 'Consolas';
+            obj.ax.Title.FontSize = obj.titlefontsize;
+            obj.ax.TitleFontSizeMultiplier = 1;
         end
         
         
         function s = get.title(obj)
             if isequal(obj.Cluster,0)
-                s = {''};
+                s = {};
             else
                 s = {obj.Cluster.Session.Name};
             end
         end
         
         function standard_plot_postamble(obj)
+            obj.ax.Title.String = {};
             if obj.showtitle, obj.show_title; end
             if obj.showinfo, obj.show_infotext; end
             if obj.showlegend, obj.handles.legend = legend([obj.handles.plot]); end
