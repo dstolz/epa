@@ -1,7 +1,7 @@
 %% Create a new Session object(s)
 
 DataPath = 'G:\My Drive\Caras Lab\ExampleData\SUBJ-ID-228\210227_concat_organized';
-% DataPath = 'C:\Users\Daniel\Documents\ExampleCarasPhysData\SUBJ-ID-219\210129_concat';
+
 TDTTankPath = DataPath;
 S = epa.kilosort2session(DataPath,TDTTankPath);
 
@@ -11,15 +11,15 @@ D = epa.DataBrowser;
 
 %% Access currently selected data in the DataBrowser
 
-C = D.curClusters;
+C = D.curClusters
 
-E1 = D.curEvent1;
-E2 = D.curEvent2;
+E1 = D.curEvent1
+E2 = D.curEvent2
 
-E1vals = D.curEvent1Values;
-E2vals = D.curEvent2Values;
+E1vals = D.curEvent1Values
+E2vals = D.curEvent2Values
 
-curSession = D.curSession;
+curSession = D.curSession
 
 
 
@@ -27,7 +27,8 @@ curSession = D.curSession;
 
 %% we can use S.find_Session to return a Session based on a substring
 
-Spost = S.find_Session("Post"); % return the "Passive-Post-210227-125506" session
+% find and return the "Passive-Post-210227-125506" session
+Spost = S.find_Session("Post"); 
 
 % Note that the handle to the Session object is returned so no data is
 % copied. Modifying Spost is the same as modifying S(3)
