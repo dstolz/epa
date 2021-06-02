@@ -20,8 +20,9 @@ classdef PSTH < epa.plot.PlotType
     methods
         function obj = PSTH(Cluster,varargin)
             obj = obj@epa.plot.PlotType(varargin{:});
-            
-            obj.Cluster = Cluster;
+            if nargin > 0 && ~isempty(Cluster)
+                obj.Cluster = Cluster;
+            end
         end
         
         function set.window(obj,w)

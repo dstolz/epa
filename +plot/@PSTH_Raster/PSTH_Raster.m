@@ -30,8 +30,9 @@ classdef PSTH_Raster < epa.plot.PlotType
     methods
         function obj = PSTH_Raster(Cluster,varargin)
             obj = obj@epa.plot.PlotType(varargin{:});
-            
-            obj.Cluster = Cluster;
+            if nargin > 0 && ~isempty(Cluster)
+                obj.Cluster = Cluster;
+            end
         end
         
         function set.window(obj,w)
