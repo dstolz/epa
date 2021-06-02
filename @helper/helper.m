@@ -6,8 +6,24 @@ classdef helper < handle
             tok = tok{1};
         end
         
-        function par = parse_parameters(par,varargin)
+        function p = get_settable_properties(obj)
             
+            M = metaclass(obj);
+                        
+            p = M.PropertyList;
+            ind = ismember({p.SetAccess},'public');
+            ind = ind & ~[p.Constant];
+            p(~ind) = [];
+            p = {p.Name};
+                        
+            p(ismember(p,{'Cluster','ax','parent','handles', ...
+                'DataFormat','event','eventvalue', ...
+                'eventx','eventxvalue','eventy','eventyvalue'})) = [];
+            
+        end
+        
+        
+        function par = parse_parameters(par,varargin)
             if startsWith(class(par),'epa.plot')
                 par = epa.helper.obj2par(par);
             end

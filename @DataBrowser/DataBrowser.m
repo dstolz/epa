@@ -380,23 +380,9 @@ classdef DataBrowser < handle
             
             pst = h.SelectPlotStyle.Value;
                 
-            pst = ['epa.plot.' pst];
+            tmpObj = epa.plot.(pst);
             
-            tmpObj = feval(pst,obj.curClusters(1));
-            
-            M = metaclass(tmpObj);
-            
-            obj.plotMeta = M;
-            
-            p = M.PropertyList;
-            ind = ismember({p.SetAccess},'public');
-            ind = ind & ~[p.Constant];
-            p(~ind) = [];
-            p = {p.Name};
-                        
-            p(ismember(p,{'Cluster','ax','parent','handles', ...
-                'DataFormat','event','eventvalue', ...
-                'eventx','eventxvalue','eventy','eventyvalue'})) = [];
+            p = epa.helper.get_settable_properties(tmpObj);
             
             h.ParameterList.Items = p;
             
