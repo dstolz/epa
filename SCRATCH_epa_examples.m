@@ -38,8 +38,10 @@ Spost.Clusters(1)
 
 %% Example 1a - Using 'Name,Value' paired input
 
-% h = epa.plot.PSTH_Raster(Spost.Clusters(3),'event',"AMdepth");
-h = epa.plot.PSTH(Spost.Clusters(3),'event',"AMdepth");
+C = Spost.Clusters(3);
+
+% h = epa.plot.PSTH_Raster(C,'event',"AMdepth");
+h = epa.plot.PSTH(C,'event',"AMdepth");
 
 % you can also set properties after creating the plot object
 h.eventvalue = 0.5;
