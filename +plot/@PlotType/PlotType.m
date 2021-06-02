@@ -47,7 +47,7 @@ classdef PlotType < handle & dynamicprops
     
     methods
         function obj = PlotType(varargin)
-            par = epa.helper.parse_parameters(obj,varargin);
+            par = epa.helper.parse_params(obj,varargin{:});
             
             epa.helper.par2obj(obj,par);
             

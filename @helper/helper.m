@@ -23,8 +23,9 @@ classdef helper < handle
         end
         
         
-        function par = parse_parameters(par,varargin)
-            if startsWith(class(par),'epa.plot')
+        function par = parse_params(par,varargin)
+            
+            if isobject(par)
                 par = epa.helper.obj2par(par);
             end
             
@@ -33,18 +34,21 @@ classdef helper < handle
                     varargin = varargin{1};
                 end
                 
-                % assume already config structure
-                if isstruct(varargin{1})
-                    fn = fieldnames(varargin{1});
-                    fv = struct2cell(varargin{1});
-                    varargin = [fn'; fv'];
-                    varargin = varargin(:)';
-                    
-                    
-                elseif iscell(varargin)
+                if iscell(varargin)
                     % might be passed as a varargin, instead of varargin{:}
                     varargin = varargin{:};
+                    
+                elseif isobject(varargin)
+                    varargin = epa.helper.obj2par(varargin);
+                    
                 end
+            end
+            
+            if isstruct(varargin)
+                fn = fieldnames(varargin);
+                fv = struct2cell(varargin);
+                varargin = [fn'; fv'];
+                varargin = varargin(:)';
             end
             
             [~,params] = parseparams(varargin);

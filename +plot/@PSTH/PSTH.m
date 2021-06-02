@@ -51,16 +51,15 @@ classdef PSTH < epa.plot.PlotType
             
             E = obj.event;
             
-            par = epa.helper.obj2par(obj);
             
-            [c,b,uv] = C.psth(par);
+            [c,b,uv] = C.psth(obj);
             
-            cm = epa.helper.colormap(par.colormap,size(c,1));
+            cm = epa.helper.colormap(obj.colormap,size(c,1));
             
             cla(axe,'reset');
             hold(axe,'on')
             
-            if par.showeventonset
+            if obj.showeventonset
                 obj.handles.eventonset = line(axe,[0 0],[0 max(c(:))*1.1],'color',[0.6 0.6 0.6],'linewidth',1,'tag','ZeroMarker');
             end
             
@@ -83,16 +82,16 @@ classdef PSTH < epa.plot.PlotType
             
             xlabel(axe,'time (s)');
             
-            switch lower(par.normalization)
+            switch lower(obj.normalization)
                 case {'firingrate','fr'}
                     ylabel(axe,'firing rate (Hz)');
                 otherwise
-                    ylabel(axe,par.normalization);
+                    ylabel(axe,obj.normalization);
             end
             
             
             
-            axe.XLim = par.window;
+            axe.XLim = obj.window;
             
             axe.XAxis.TickDirection = 'out';
             axe.YAxis.TickDirection = 'out';

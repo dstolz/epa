@@ -39,7 +39,7 @@ classdef DataBrowser < handle
             
 
             if length(varargin) > 1
-                par = epa.helper.parse_parameters(obj,varargin);
+                par = epa.helper.parse_params(obj,varargin{:});
                 
                 fn = fieldnames(par);
                 for i = 1:length(fn)

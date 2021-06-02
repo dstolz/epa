@@ -39,7 +39,7 @@ classdef ReceptiveField < handle
         function obj = ReceptiveField(Cluster,varargin)
             obj.Cluster = Cluster;
             
-            par = epa.helper.parse_parameters(obj,varargin);
+            par = epa.helper.parse_params(obj,varargin{:});
             
             m = metaclass(obj);
             p = m.PropertyList;

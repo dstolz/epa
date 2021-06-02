@@ -25,7 +25,7 @@ par.normalization = 'count';
 par.window     = [0 1];
 
 
-par = epa.helper.parse_parameters(par,varargin);
+par = epa.helper.parse_params(par,varargin{:});
 
 [t,eidx,v] = obj.eventlocked(par);
 

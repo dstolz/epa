@@ -25,7 +25,7 @@ par.eventvalue = 'all';
 par.window     = [0 1];
 par.sorton     = 'events';
 
-par = epa.helper.parse_parameters(par,varargin);
+par = epa.helper.parse_params(par,varargin{:});
 
 mustBeNonempty(par.event);
 
