@@ -67,7 +67,7 @@ BPtimes = [0; BPtimes]; % makes indexing spikes later easier
 
 
 % load spike clusters with spike times (in secconds) from txt files
-d = dir(fullfile(DataPath,'**\*concat_cluster*.txt'));
+d = dir(fullfile(DataPath,['**' filesep '*concat_cluster*.txt']));
 ffn = cellfun(@fullfile,{d.folder},{d.name},'uni',0);
 ST  = cellfun(@dlmread,ffn,'uni',0);
 
@@ -91,7 +91,7 @@ end
 
 
 %% Read Events from CSV files with event information
-d = dir(fullfile(DataPath,'**\*trialInfo.csv'));
+d = dir(fullfile(DataPath,['**' filesep '*trialInfo.csv']));
 
 onsetEvent  = 'Trial_onset';
 offsetEvent = 'Trial_offset';
@@ -140,7 +140,7 @@ if isempty(TDTTankPath), return; end
 %% Read Events from TDT Tank
 addpath(fullfile(epa.helper.rootdir,'+epa','TDTbin2mat'));
 
-d = dir(fullfile(DataPath,'**\*.Tbk'));
+d = dir(fullfile(DataPath,['**' filesep '*.Tbk']));
 sn = cellstr([S.Name]);
 for t = 1:length(d)    
     blockPth = d(t).folder;
