@@ -2,8 +2,7 @@ classdef helper < handle
     methods (Static)
         function tok = tokenize(str,delimiters)
             if nargin < 2 || isempty(delimiters), delimiters = ','; end
-            tok = textscan(str,'%s',-1,'delimiter',delimiters);
-            tok = tok{1};
+            tok = strsplit(str,delimiters);
         end
         
         function p = get_settable_properties(obj)
