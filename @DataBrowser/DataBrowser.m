@@ -336,7 +336,22 @@ classdef DataBrowser < handle
             
             pv = h.ParameterList.Value;
             
-            h.ParameterEdit.Value = mat2str(obj.Par.(pv));
+            v = obj.Par.(pv);
+            if isempty(v)
+                h.ParameterEdit.Value = '[]';
+            elseif isstring(v) || ischar(v)
+                h.ParameterEdit.Value = v;
+            elseif iscell(v)
+                h.ParameterEdit.Value = v{1};
+            else
+                h.ParameterEdit.Value = mat2str(v);
+            end
+            
+            p = obj.plotMeta.PropertyList;
+            p = p(ismember({p.Name},pv));
+            str = epa.helper.metaprop2str(p);
+            
+            h.ParameterEdit.Tooltip = str;
         end
         
         function parameter_edit(obj,src,event)
@@ -383,6 +398,8 @@ classdef DataBrowser < handle
             tmpObj = epa.plot.(pst);
             
             p = epa.helper.get_settable_properties(tmpObj);
+            
+            obj.plotMeta = metaclass(tmpObj);
             
             h.ParameterList.Items = p;
             

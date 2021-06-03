@@ -129,6 +129,57 @@ classdef helper < handle
             rd = fileparts(fileparts(fileparts(which('epa.helper'))));
         end
         
-        
+        function str = metaprop2str(p)
+            
+            V = p.Validation;
+            
+            if isempty(V)
+                str = {'< unable to get metaproperties >'};
+                return
+            end
+            
+            pn = V.Class.Name;
+            
+            sz = V.Size;
+            len = length(sz);
+            dim = cell(1:len);
+            for k = 1:len
+                switch class(sz(k))
+                    case 'meta.FixedDimension'
+                        dim{k} = sz(k).Length;
+                    case 'meta.UnrestrictedDimension'
+                        dim{k} = ':';
+                end
+            end
+            dim = cellfun(@num2str,dim,'uni',0);
+            dim = strjoin(dim,',');
+            
+            pv = cellfun(@func2str,V.ValidatorFunctions,'uni',0);
+            ind = contains(pv,'mustBeMember');
+            if any(ind)
+                idx = find(ind);
+                for i = 1:length(idx)
+                    tpv = epa.helper.tokenize(pv{idx(i)});
+                    tpv(1) = [];
+                    tpv{1}(tpv{1} == '{') = [];
+                    tpv{end}(tpv{end} == '}'|tpv{end} == ')') = [];
+                    tpv = strjoin(tpv,',');
+                    pv{idx(i)} = sprintf('Options: %s',tpv);
+                end
+            end
+            
+            str = {};
+            if p.HasDefault
+                pd = p.DefaultValue;
+                str{end+1,1} = sprintf('Default Value = %s',mat2str(pd));
+            end
+            str{end+1,1} = sprintf('Type: ''%s''',pn);
+            str{end+1}   = sprintf('Dimensions: (%s)',dim);
+            if ~isempty(pv)
+                str{end+1} = 'Validation Rules:';
+                str(end+1:end+length(pv)) = pv(:);
+            end
+
+        end
     end
 end
