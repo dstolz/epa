@@ -93,6 +93,10 @@ end
 %% Read Events from CSV files with event information
 d = dir(fullfile(DataPath,['**' filesep '*trialInfo.csv']));
 
+if isempty(d)
+    warning(sprintf('No *trialInfo.csv files were found on the DataPath: "%s"',DataPath));
+end
+
 onsetEvent  = 'Trial_onset';
 offsetEvent = 'Trial_offset';
 
