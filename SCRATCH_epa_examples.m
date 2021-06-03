@@ -69,3 +69,41 @@ disp(h)
 figure;
 h.plot
 
+
+
+
+%%
+
+Sam = S(1:3);
+
+
+C = [Sam(:).Clusters];
+
+par = [];
+par.event = "AMdepth";
+par.window = [0 1];
+
+for i = 1:length(C) 
+    [t,eidx,v] = C(i).eventlocked(par);
+    
+    uv = unique(v);
+    uv(uv==0) = [];
+    
+    refI
+    
+    for j = 1:length(uv)
+        ind = uv(j) == v;
+        data = t(ind)
+        dp(j) = epa.metric.neurometric_dprime(
+    end
+end
+
+
+% epa.metric.neurometric_dprime
+
+
+
+
+
+
+
